@@ -57,3 +57,6 @@ dependencies {
         exclude module: 'recyclerview-v7'
     }
 }
+
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

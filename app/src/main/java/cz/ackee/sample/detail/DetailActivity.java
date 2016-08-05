@@ -52,7 +52,8 @@ public class DetailActivity extends ListActivity implements IDetailView {
                         presenter.refresh();
                         return false;
                     }
-                });
+                })
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(menu);
 
     }
