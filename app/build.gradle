@@ -57,8 +57,8 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
     compile 'io.reactivex:rxandroid:1.2.1'
 
-    apt"cz.ackee.rxwrapper:processor:0.1.0"
-    compile "cz.ackee.rxwrapper:annotations:0.1.0"
+    apt"cz.ackee.rxwrapper:processor:0.1.1"
+    compile "cz.ackee.rxwrapper:annotations:0.1.1"
 
     compile project(":library")
 }
