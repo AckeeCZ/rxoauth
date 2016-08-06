@@ -3,7 +3,7 @@ package cz.ackee.rxoauth;
 import android.util.Log;
 
 /**
- * TODO add class description
+ * Simple logger
  * Created by David Bilik[david.bilik@ackee.cz] on {05/08/16}
  **/
 public class Logger {
@@ -11,7 +11,7 @@ public class Logger {
     private static boolean logging;
 
     private Logger() {
-        logging = true;
+        logging = BuildConfig.DEBUG;
     }
 
     public static void d(String msg) {

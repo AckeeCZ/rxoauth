@@ -1,7 +1,8 @@
 package cz.ackee.rxoauth;
 
 /**
- * Event listen
+ * Listener with events regarding Oauth2 tokens lifecycle
+ *
  * Created by David Bilik[david.bilik@ackee.cz] on {05/08/16}
  **/
 public interface IOauthEventListener {

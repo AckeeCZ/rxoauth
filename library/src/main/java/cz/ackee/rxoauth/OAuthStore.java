@@ -26,7 +26,7 @@ public class OAuthStore {
     public void saveOauthCredentials(String accessToken, String refreshToken) {
         sp.edit().putString(ACCESS_TOKEN_KEY, accessToken)
                 .putString(REFRESH_TOKEN_KEY, refreshToken)
-                .commit();
+                .apply();
     }
 
     public String getAccessToken() {

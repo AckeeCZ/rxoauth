@@ -17,10 +17,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Tests for {@link RxOauthManaging} class
+ * Tests for {@link RxOauthManager} class
  * Created by David Bilik[david.bilik@ackee.cz] on {05/08/16}
  **/
-public class RxOauthManagingTest {
+public class RxOauthManagerTest {
 
     private boolean firstRun;
 
@@ -33,7 +33,7 @@ public class RxOauthManagingTest {
     public void testSuccessFullRequest() {
         IAuthService authService = new IAuthService() {
             @Override
-            public Observable<? extends ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
                 return null;
             }
         };
@@ -44,7 +44,7 @@ public class RxOauthManagingTest {
 
             }
         };
-        RxOauthManaging managing = new RxOauthManaging(getTargetContext(), authService, eventListener);
+        RxOauthManager managing = new RxOauthManager(getTargetContext(), authService, eventListener);
         assertEquals(Observable.just("ok").compose(managing.<String>wrapWithOAuthHandling()).toBlocking().first(), "ok");
     }
 
@@ -72,7 +72,7 @@ public class RxOauthManagingTest {
         when(mockedCredentials.getRefreshToken()).thenReturn("def");
         IAuthService authService = new IAuthService() {
             @Override
-            public Observable<? extends ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
                 return Observable.just(mockedCredentials);
             }
         };
@@ -83,7 +83,7 @@ public class RxOauthManagingTest {
 
             }
         };
-        RxOauthManaging managing = new RxOauthManaging(getTargetContext(), authService, eventListener);
+        RxOauthManager managing = new RxOauthManager(getTargetContext(), authService, eventListener);
         Observable<Object> badObservable = Observable.just("ok")
                 .flatMap(new Func1<String, Observable<?>>() {
                     @Override
@@ -110,12 +110,12 @@ public class RxOauthManagingTest {
 
         IAuthService authService = new IAuthService() {
             @Override
-            public Observable<? extends ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
                 return Observable.error(badRequestException);
             }
         };
 
-        RxOauthManaging managing = new RxOauthManaging(getTargetContext(), authService, eventListener);
+        RxOauthManager managing = new RxOauthManager(getTargetContext(), authService, eventListener);
         Observable<Object> badObservable = Observable.just("ok")
                 .flatMap(new Func1<String, Observable<String>>() {
                     @Override

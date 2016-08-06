@@ -18,21 +18,21 @@ import rx.functions.Func1;
  * Rx managing of Oauth2 logic
  * Created by David Bilik[david.bilik@ackee.cz] on {23/03/16}
  **/
-public class RxOauthManaging {
-    public static final String TAG = RxOauthManaging.class.getName();
+public class RxOauthManager {
+    public static final String TAG = RxOauthManager.class.getName();
     private final OAuthStore oAuthStore;
     private final IAuthService authService;
     private final IOauthEventListener eventListener;
     private Observable<ICredentialsModel> refreshTokenObservable;
 
-    public RxOauthManaging(SharedPreferences sp, IAuthService apiInteractor, IOauthEventListener eventListener) {
+    public RxOauthManager(SharedPreferences sp, IAuthService apiInteractor, IOauthEventListener eventListener) {
         this.oAuthStore = new OAuthStore(sp);
         this.authService = apiInteractor;
         this.eventListener = eventListener;
         initRefreshTokenObservable();
     }
 
-    public RxOauthManaging(Context ctx, IAuthService apiInteractor, IOauthEventListener eventListener) {
+    public RxOauthManager(Context ctx, IAuthService apiInteractor, IOauthEventListener eventListener) {
         this.oAuthStore = new OAuthStore(ctx);
         this.authService = apiInteractor;
         this.eventListener = eventListener;
