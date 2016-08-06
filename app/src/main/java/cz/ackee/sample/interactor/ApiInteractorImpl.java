@@ -5,8 +5,8 @@ import android.util.Log;
 
 import java.util.List;
 
-import cz.ackee.wrapper.ICredentialsModel;
-import cz.ackee.wrapper.RxOauthManager;
+import cz.ackee.rxoauth.ICredentialsModel;
+import cz.ackee.rxoauth.RxOauthManager;
 import cz.ackee.wrapper.annotations.IComposeWrapper;
 import cz.ackee.sample.App;
 import cz.ackee.sample.login.MainActivity;

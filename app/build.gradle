@@ -46,13 +46,9 @@ ext {
 }
 
 dependencies {
-    apt 'com.squareup:javapoet:1.7.0' // <- Note that since my Processor used javapoet, I had to include Javapoet in the main module's apt dependency as well as my processor jar
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-
-    compile project(':library')
-    compile project(':annotations')
 
     compile 'com.android.support:appcompat-v7:24.1.1'
 
@@ -61,15 +57,9 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
     compile 'io.reactivex:rxandroid:1.2.1'
 
+    apt"cz.ackee.rxwrapper:processor:0.1.0"
+    compile "cz.ackee.rxwrapper:annotations:0.1.0"
+
+    compile project(":library")
 }
 
-
-task processorTask(type: Copy) {
-    from('../processor/outputs/') {
-        include '**/*.jar'
-    }
-    into 'libs/'
-}
-
-processorTask.dependsOn(':processor:uploadArchives')
-preBuild.dependsOn(processorTask)

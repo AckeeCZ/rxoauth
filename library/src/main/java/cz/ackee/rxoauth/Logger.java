@@ -1,8 +1,6 @@
-package cz.ackee.wrapper;
+package cz.ackee.rxoauth;
 
 import android.util.Log;
-
-import cz.ackee.rxoauth.BuildConfig;
 
 /**
  * Simple logger

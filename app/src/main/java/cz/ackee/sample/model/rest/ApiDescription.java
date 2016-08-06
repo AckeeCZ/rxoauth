@@ -2,7 +2,7 @@ package cz.ackee.sample.model.rest;
 
 import java.util.List;
 
-import cz.ackee.wrapper.ICredentialsModel;
+import cz.ackee.rxoauth.ICredentialsModel;
 import cz.ackee.wrapper.annotations.NoCompose;
 import cz.ackee.wrapper.annotations.WrappedService;
 import cz.ackee.sample.model.LoginResponse;

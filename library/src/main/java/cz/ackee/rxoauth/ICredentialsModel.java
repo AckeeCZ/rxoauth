@@ -1,4 +1,4 @@
-package cz.ackee.wrapper;
+package cz.ackee.rxoauth;
 
 /**
  * Model for credentials

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import cz.ackee.wrapper.ICredentialsModel;
+import cz.ackee.rxoauth.ICredentialsModel;
 import cz.ackee.sample.model.LoginResponse;
 import cz.ackee.sample.model.SampleItem;
 import okhttp3.MediaType;

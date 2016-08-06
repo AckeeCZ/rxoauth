@@ -1,4 +1,4 @@
-package cz.ackee.wrapper;
+package cz.ackee.rxoauth;
 
 import org.junit.Before;
 import org.junit.Test;
