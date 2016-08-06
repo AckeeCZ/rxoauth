@@ -38,6 +38,12 @@ public class RxOauthManager {
         this.eventListener = eventListener;
         initRefreshTokenObservable();
     }
+    public RxOauthManager(OAuthStore store, IAuthService apiInteractor, IOauthEventListener eventListener) {
+        this.oAuthStore = store;
+        this.authService = apiInteractor;
+        this.eventListener = eventListener;
+        initRefreshTokenObservable();
+    }
 
     public Interceptor getAuthInterceptor() {
         return new AuthInterceptor(this.oAuthStore);
