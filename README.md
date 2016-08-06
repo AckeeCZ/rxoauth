@@ -41,3 +41,27 @@ On requests you want to check for tokens expiration you have to call our transfo
     this.apiDescription.getData()
         .compose(this.rxOauth.wrapWithOauthHandling());
 ```
+
+### RxWrapper
+For purposes of this library was developed small annotation processor called RxWrapper, that will generate class which adds `compose(this.rxOauth.wrapWithOauthHandling());` to every request
+Initializaiton in constructor of Api Interactor:
+```java
+public ApiInteractorImpl(OAuthStore oAuthStore, ApiDescription apiDescription) {
+        this.apiDescription = apiDescription;
+        this.rxOauthManaging = new RxOauthManager(oAuthStore, this, new IOauthEventListener() {
+            @Override
+            public void onRefreshTokenFailed() {
+               //logout
+            }
+        });
+
+        apiWrapper = new ApiDescriptionWrapped(apiDescription, new IComposeWrapper() {
+            @Override
+            public <T> Observable.Transformer<T, T> wrap() {
+                return rxOauthManaging.wrapWithOAuthHandling();
+            }
+        });
+    }
+```
+
+
