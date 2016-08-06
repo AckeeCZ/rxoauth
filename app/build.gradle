@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.neenbedankt.android-apt'
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
@@ -44,10 +46,14 @@ ext {
 }
 
 dependencies {
+    apt 'com.squareup:javapoet:1.7.0' // <- Note that since my Processor used javapoet, I had to include Javapoet in the main module's apt dependency as well as my processor jar
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
     compile project(':library')
+    compile project(':annotations')
+
     compile 'com.android.support:appcompat-v7:24.1.1'
 
     compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
@@ -56,3 +62,14 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
 
 }
+
+
+task processorTask(type: Copy) {
+    from('../apt/outputs/') {
+        include '**/*.jar'
+    }
+    into 'libs/'
+}
+
+processorTask.dependsOn(':apt:uploadArchives')
+preBuild.dependsOn(processorTask)

@@ -33,7 +33,7 @@ public class RxOauthManagingTest {
     public void testSuccessFullRequest() {
         IAuthService authService = new IAuthService() {
             @Override
-            public Observable<? extends ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
                 return null;
             }
         };
@@ -72,7 +72,7 @@ public class RxOauthManagingTest {
         when(mockedCredentials.getRefreshToken()).thenReturn("def");
         IAuthService authService = new IAuthService() {
             @Override
-            public Observable<? extends ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
                 return Observable.just(mockedCredentials);
             }
         };
@@ -110,7 +110,7 @@ public class RxOauthManagingTest {
 
         IAuthService authService = new IAuthService() {
             @Override
-            public Observable<? extends ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
                 return Observable.error(badRequestException);
             }
         };
