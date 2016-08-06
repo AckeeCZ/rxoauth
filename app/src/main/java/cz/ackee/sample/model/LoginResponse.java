@@ -1,6 +1,6 @@
 package cz.ackee.sample.model;
 
-import cz.ackee.rxoauth.ICredentialsModel;
+import cz.ackee.wrapper.ICredentialsModel;
 
 /**
  * Response for login

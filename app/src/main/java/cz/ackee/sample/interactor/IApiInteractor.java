@@ -3,7 +3,7 @@ package cz.ackee.sample.interactor;
 
 import java.util.List;
 
-import cz.ackee.rxoauth.IAuthService;
+import cz.ackee.wrapper.IAuthService;
 import cz.ackee.sample.model.LoginResponse;
 import cz.ackee.sample.model.SampleItem;
 import rx.Observable;
