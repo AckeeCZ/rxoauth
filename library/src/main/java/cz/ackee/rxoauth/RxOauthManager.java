@@ -126,7 +126,7 @@ public class RxOauthManager {
 
     private boolean isBadRequestError(Throwable error) {
         if (error instanceof HttpException) {
-            if (((HttpException) error).code() == HttpURLConnection.HTTP_BAD_REQUEST) {
+            if (((HttpException) error).code() == HttpURLConnection.HTTP_BAD_REQUEST || ((HttpException) error).code() == HttpURLConnection.HTTP_UNAUTHORIZED ) {
                 return true;
             }
         }
