@@ -11,7 +11,7 @@ When refreshing token fails, client is notified via Event listener that is passe
 
 ### Dependencies
 ```groovy
-compile 'cz.ackee.rxoauth:rxoauth:1.0.2'
+compile 'cz.ackee.rxoauth:rxoauth:1.0.3'
 
 ```
 
@@ -71,3 +71,6 @@ public ApiInteractorImpl(OAuthStore oAuthStore, ApiDescription apiDescription) {
 ```
 
 
+## CHANGELOG
+### 1.0.3
+- When checking for unsuccessful refresh of access token, status code 401 is taken as error along with SC 400
