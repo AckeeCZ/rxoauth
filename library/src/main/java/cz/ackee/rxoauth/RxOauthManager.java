@@ -70,7 +70,6 @@ public class RxOauthManager {
         return new Observable.Transformer<T, T>() {
             @Override
             public Observable<T> call(final Observable<T> observable) {
-                Log.d(TAG, "call: ");
                 return observable.onErrorResumeNext(new Func1<Throwable, Observable<? extends T>>() {
                     @Override
                     public Observable<? extends T> call(Throwable error) {
@@ -113,11 +112,8 @@ public class RxOauthManager {
     }
 
     private boolean isUnAuthorizedError(Throwable error) {
-        Log.e(TAG, "isUnAuthorizedError: ",error );
         if (error instanceof HttpException) {
-            Log.d(TAG, "isUnAuthorizedError: in instance of");
             if (((HttpException) error).code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                Log.d(TAG, "isUnAuthorizedError: code 401");
                 return true;
             }
         }
