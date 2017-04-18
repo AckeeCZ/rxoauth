@@ -2,17 +2,18 @@ package cz.ackee.rxoauth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.net.HttpURLConnection;
+import java.util.concurrent.Callable;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import okhttp3.Interceptor;
-import retrofit2.adapter.rxjava.HttpException;
-import rx.Observable;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func0;
-import rx.functions.Func1;
+import retrofit2.HttpException;
 
 /**
  * Rx managing of Oauth2 logic
@@ -38,6 +39,7 @@ public class RxOauthManager {
         this.eventListener = eventListener;
         initRefreshTokenObservable();
     }
+
     public RxOauthManager(OAuthStore store, IAuthService apiInteractor, IOauthEventListener eventListener) {
         this.oAuthStore = store;
         this.authService = apiInteractor;
@@ -50,7 +52,7 @@ public class RxOauthManager {
     }
 
     private void initRefreshTokenObservable() {
-        refreshTokenObservable = Observable.defer(new Func0<Observable<ICredentialsModel>>() {
+        refreshTokenObservable = Observable.defer(new Callable<Observable<ICredentialsModel>>() {
             @Override
             public Observable<ICredentialsModel> call() {
                 return refreshAccessToken();
@@ -58,32 +60,39 @@ public class RxOauthManager {
         })
                 .publish()
                 .refCount()
-                .doOnCompleted(new Action0() {
+                .doOnComplete(new Action() {
                     @Override
-                    public void call() {
+                    public void run() throws Exception {
                         initRefreshTokenObservable();
                     }
+
                 });
     }
 
-    public <T> Observable.Transformer<T, T> wrapWithOAuthHandling() {
-        return new Observable.Transformer<T, T>() {
+    /**
+     * Wrap upstream observable with oauth refresh access token handling
+     *
+     * @param <T>
+     * @return
+     */
+    public <T> ObservableTransformer<T, T> wrapWithOAuthHandling() {
+        return new ObservableTransformer<T, T>() {
             @Override
-            public Observable<T> call(final Observable<T> observable) {
-                return observable.onErrorResumeNext(new Func1<Throwable, Observable<? extends T>>() {
+            public ObservableSource<T> apply(final Observable<T> upstream) {
+                return upstream.onErrorResumeNext(new Function<Throwable, Observable<? extends T>>() {
                     @Override
-                    public Observable<? extends T> call(Throwable error) {
-                        if (isUnAuthorizedError(error)) {
+                    public Observable<? extends T> apply(final Throwable throwable) throws Exception {
+                        if (isUnAuthorizedError(throwable)) {
                             Logger.d("Access token expired");
                             return refreshTokenObservable
-                                    .flatMap(new Func1<ICredentialsModel, Observable<T>>() {
+                                    .flatMap(new Function<ICredentialsModel, Observable<T>>() {
                                         @Override
-                                        public Observable<T> call(ICredentialsModel iCredentialsModel) {
-                                            return observable;
+                                        public Observable<T> apply(ICredentialsModel iCredentialsModel) throws Exception {
+                                            return upstream;
                                         }
                                     });
                         }
-                        return Observable.error(error);
+                        return Observable.error(throwable);
                     }
                 });
             }
@@ -93,15 +102,15 @@ public class RxOauthManager {
     private Observable<ICredentialsModel> refreshAccessToken() {
         String refreshToken = oAuthStore.getRefreshToken();
         return authService.refreshAccessToken(refreshToken)
-                .doOnNext(new Action1<ICredentialsModel>() {
+                .doOnNext(new Consumer<ICredentialsModel>() {
                     @Override
-                    public void call(ICredentialsModel iCredentialsModel) {
+                    public void accept(ICredentialsModel iCredentialsModel) {
                         oAuthStore.saveOauthCredentials(iCredentialsModel);
                     }
                 })
-                .doOnError(new Action1<Throwable>() {
+                .doOnError(new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) {
                         if (isBadRequestError(throwable)) {
                             Logger.d("Refresh token expired");
                             oAuthStore.onLogout();
@@ -122,7 +131,7 @@ public class RxOauthManager {
 
     private boolean isBadRequestError(Throwable error) {
         if (error instanceof HttpException) {
-            if (((HttpException) error).code() == HttpURLConnection.HTTP_BAD_REQUEST || ((HttpException) error).code() == HttpURLConnection.HTTP_UNAUTHORIZED ) {
+            if (((HttpException) error).code() == HttpURLConnection.HTTP_BAD_REQUEST || ((HttpException) error).code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 return true;
             }
         }

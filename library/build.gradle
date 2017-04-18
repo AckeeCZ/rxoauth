@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "24.0.0"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         minSdkVersion 16
@@ -22,20 +22,19 @@ android {
 
 ext {
     supportLibVersion = '23.4.0'
-    retrofitVersion = '2.0.2'
-    fbVersion = '9.0.2'
-    gpsVersion = '9.0.2'
+    retrofitVersion = '2.2.0'
     okHttpVersion = '3.2.0'
-    rxBindingsVersion = '0.4.0'
-    sqlbriteVersion = '0.6.1'
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'io.reactivex:rxandroid:1.1.0'
+
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
+
     compile "com.squareup.okhttp3:okhttp:${okHttpVersion}"
-    compile "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}"
+    compile "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
 
     // testing related dependencies
     // Required -- JUnit 4 framework

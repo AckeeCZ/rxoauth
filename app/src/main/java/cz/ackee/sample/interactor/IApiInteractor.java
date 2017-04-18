@@ -6,7 +6,7 @@ import java.util.List;
 import cz.ackee.rxoauth.IAuthService;
 import cz.ackee.sample.model.LoginResponse;
 import cz.ackee.sample.model.SampleItem;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Interactor for communicating with API

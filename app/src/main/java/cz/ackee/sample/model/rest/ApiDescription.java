@@ -7,7 +7,7 @@ import cz.ackee.wrapper.annotations.NoCompose;
 import cz.ackee.wrapper.annotations.WrappedService;
 import cz.ackee.sample.model.LoginResponse;
 import cz.ackee.sample.model.SampleItem;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Api description simulating Retrofit description
@@ -18,9 +18,9 @@ import rx.Observable;
 public interface ApiDescription {
 
     @NoCompose
-    public Observable<LoginResponse> login(String name, String passwd);
+    Observable<LoginResponse> login(String name, String passwd);
 
-    public Observable<List<SampleItem>> getData();
+    Observable<List<SampleItem>> getData();
 
     @NoCompose
     Observable<ICredentialsModel> refreshAccessToken(String refreshToken);

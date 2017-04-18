@@ -7,12 +7,12 @@ import java.util.Random;
 import cz.ackee.rxoauth.ICredentialsModel;
 import cz.ackee.sample.model.LoginResponse;
 import cz.ackee.sample.model.SampleItem;
+import io.reactivex.Observable;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.BufferedSource;
+import retrofit2.HttpException;
 import retrofit2.Response;
-import retrofit2.adapter.rxjava.HttpException;
-import rx.Observable;
 
 /**
  * TODO add class description

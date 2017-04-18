@@ -1,6 +1,7 @@
 package cz.ackee.rxoauth;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 /**
  * Service that performs requests to server regarding oauth

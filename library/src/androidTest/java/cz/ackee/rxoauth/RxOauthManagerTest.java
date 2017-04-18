@@ -3,12 +3,14 @@ package cz.ackee.rxoauth;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.functions.Function;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.BufferedSource;
-import retrofit2.adapter.rxjava.HttpException;
-import rx.Observable;
-import rx.functions.Func1;
+import retrofit2.HttpException;
+
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static org.junit.Assert.*;
@@ -44,8 +46,9 @@ public class RxOauthManagerTest {
 
             }
         };
+
         RxOauthManager managing = new RxOauthManager(getTargetContext(), authService, eventListener);
-        assertEquals(Observable.just("ok").compose(managing.<String>wrapWithOAuthHandling()).toBlocking().first(), "ok");
+        assertEquals(Observable.just("ok").compose(managing.<String>wrapWithOAuthHandling()).blockingFirst(), "ok");
     }
 
     @Test
@@ -85,9 +88,9 @@ public class RxOauthManagerTest {
         };
         RxOauthManager managing = new RxOauthManager(getTargetContext(), authService, eventListener);
         Observable<Object> badObservable = Observable.just("ok")
-                .flatMap(new Func1<String, Observable<?>>() {
+                .flatMap(new Function<String, ObservableSource<?>>() {
                     @Override
-                    public Observable<String> call(String s) {
+                    public Observable<String> apply(String s) {
                         if (firstRun) {
                             firstRun = false;
                             return Observable.error(unauthorizedException);
@@ -96,7 +99,7 @@ public class RxOauthManagerTest {
                     }
                 })
                 .compose(managing.wrapWithOAuthHandling());
-        assertEquals(badObservable.toBlocking().first(), "ok");
+        assertEquals(badObservable.blockingFirst(), "ok");
     }
 
     @Test
@@ -117,9 +120,9 @@ public class RxOauthManagerTest {
 
         RxOauthManager managing = new RxOauthManager(getTargetContext(), authService, eventListener);
         Observable<Object> badObservable = Observable.just("ok")
-                .flatMap(new Func1<String, Observable<String>>() {
+                .flatMap(new Function<String, ObservableSource<?>>() {
                     @Override
-                    public Observable<String> call(String s) {
+                    public Observable<String> apply(String s) {
                         if (firstRun) {
                             firstRun = false;
                             return Observable.error(unauthorizedException);
@@ -129,7 +132,7 @@ public class RxOauthManagerTest {
                 })
                 .compose(managing.wrapWithOAuthHandling());
         try {
-            badObservable.toBlocking().first();
+            badObservable.blockingFirst();
             assertTrue("Couldnt be here, should failed", false);
         } catch (RuntimeException ex) {
             ex.printStackTrace();

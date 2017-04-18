@@ -15,7 +15,7 @@ import cz.ackee.sample.model.SampleItem;
 import cz.ackee.sample.model.rest.ApiDescription;
 import cz.ackee.sample.model.rest.ApiDescriptionImpl;
 import cz.ackee.sample.model.rest.ApiDescriptionWrapped;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Implementation of api

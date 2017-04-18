@@ -4,7 +4,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "cz.ackee.rxoauth.sample"
@@ -40,7 +40,7 @@ android {
 
 ext {
     supportLibVersion = '23.4.0'
-    retrofitVersion = '2.0.2'
+    retrofitVersion = '2.2.0'
     okHttpVersion = '3.2.0'
     rxBindingsVersion = '0.4.0'
 }
@@ -53,12 +53,13 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
 
     compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
-    compile "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}"
+    compile "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
     compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
-    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
 
-    apt"cz.ackee.rxwrapper:processor:0.1.1"
-    compile "cz.ackee.rxwrapper:annotations:0.1.1"
+    apt"cz.ackee.rxwrapper:processor2:1.0.0"
+    compile "cz.ackee.rxwrapper:annotations2:1.0.0"
 
     compile project(":library")
 }

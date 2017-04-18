@@ -6,7 +6,7 @@ package cz.ackee.rxoauth;
  **/
 public interface ICredentialsModel {
 
-    public String getAccessToken();
+    String getAccessToken();
 
-    public String getRefreshToken();
+    String getRefreshToken();
 }

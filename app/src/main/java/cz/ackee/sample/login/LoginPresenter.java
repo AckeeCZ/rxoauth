@@ -2,7 +2,7 @@ package cz.ackee.sample.login;
 
 import cz.ackee.sample.interactor.ApiInteractorImpl;
 import cz.ackee.sample.model.LoginResponse;
-import rx.android.schedulers.AndroidSchedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Presenter for login screen
