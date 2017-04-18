@@ -63,7 +63,7 @@ public ApiInteractorImpl(OAuthStore oAuthStore, ApiDescription apiDescription) {
 
         apiWrapper = new ApiDescriptionWrapped(apiDescription, new IComposeWrapper() {
             @Override
-            public <T> Observable.Transformer<T, T> wrap() {
+            public <T> ObservableTransformer<T, T> wrap() {
                 return rxOauthManaging.wrapWithOAuthHandling();
             }
         });
@@ -72,5 +72,5 @@ public ApiInteractorImpl(OAuthStore oAuthStore, ApiDescription apiDescription) {
 
 
 ## CHANGELOG
-### 1.0.3
-- When checking for unsuccessful refresh of access token, status code 401 is taken as error along with SC 400
+### 1.0.0
+- Release of lib with RxJava2 support
