@@ -32,7 +32,7 @@ public class ApiInteractorImpl implements IApiInteractor {
             Log.d(TAG, "ApiInteractorImpl: should logout");
             App.getInstance().startActivity(new Intent(App.getInstance(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         });
-        IComposeWrapper wrapper = rxOauth::wrapWithOAuthHandling;
+        IComposeWrapper wrapper = rxOauth::wrapWithOAuthHandlingObservable;
         apiDescription = new ApiDescriptionImpl();
         this.apiWrapper = new ApiDescriptionWrapped(apiDescription, wrapper);
     }
@@ -46,7 +46,7 @@ public class ApiInteractorImpl implements IApiInteractor {
     @Override
     public Observable<List<SampleItem>> getData() {
        return apiWrapper.getData()
-                .compose(rxOauth.wrapWithOAuthHandling());
+                .compose(rxOauth.wrapWithOAuthHandlingObservable());
     }
 
     @Override

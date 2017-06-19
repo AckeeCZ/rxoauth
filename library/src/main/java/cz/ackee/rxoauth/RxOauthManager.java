@@ -6,9 +6,15 @@ import android.content.SharedPreferences;
 import java.net.HttpURLConnection;
 import java.util.concurrent.Callable;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableSource;
+import io.reactivex.CompletableTransformer;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.SingleTransformer;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -75,7 +81,7 @@ public class RxOauthManager {
      * @param <T>
      * @return
      */
-    public <T> ObservableTransformer<T, T> wrapWithOAuthHandling() {
+    public <T> ObservableTransformer<T, T> wrapWithOAuthHandlingObservable() {
         return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(final Observable<T> upstream) {
@@ -95,6 +101,65 @@ public class RxOauthManager {
                         return Observable.error(throwable);
                     }
                 });
+            }
+        };
+    }
+
+    /**
+     * Wrap upstream Single with oauth refresh access token handling
+     *
+     * @param <T>
+     * @return
+     */
+    public <T> SingleTransformer<T, T> wrapWithOAuthHandlingSingle() {
+        return new SingleTransformer<T, T>() {
+            @Override
+            public SingleSource<T> apply(final Single<T> upstream) {
+                return upstream
+                        .onErrorResumeNext(new Function<Throwable, SingleSource<? extends T>>() {
+                            @Override
+                            public SingleSource<? extends T> apply(final Throwable throwable) throws Exception {
+                                if (isUnAuthorizedError(throwable)) {
+                                    return refreshTokenObservable
+                                            .flatMapSingle(new Function<ICredentialsModel, Single<T>>() {
+                                                @Override
+                                                public Single<T> apply(ICredentialsModel iCredentialsModel) throws Exception {
+                                                    return upstream;
+                                                }
+                                            }).firstOrError();
+                                }
+                                return Single.error(throwable);
+                            }
+                        });
+            }
+        };
+    }
+
+    /**
+     * Wrap upstream Completable with oauth refresh access token handling
+     *
+     * @return
+     */
+    public CompletableTransformer wrapWithOAuthHandlingCompletable() {
+        return new CompletableTransformer() {
+            @Override
+            public CompletableSource apply(final Completable upstream) {
+                return upstream
+                        .onErrorResumeNext(new Function<Throwable, CompletableSource>() {
+                            @Override
+                            public CompletableSource apply(final Throwable throwable) throws Exception {
+                                if (isUnAuthorizedError(throwable)) {
+                                    return refreshTokenObservable
+                                            .flatMapCompletable(new Function<ICredentialsModel, Completable>() {
+                                                @Override
+                                                public Completable apply(ICredentialsModel iCredentialsModel) throws Exception {
+                                                    return upstream;
+                                                }
+                                            });
+                                }
+                                return Completable.error(throwable);
+                            }
+                        });
             }
         };
     }
