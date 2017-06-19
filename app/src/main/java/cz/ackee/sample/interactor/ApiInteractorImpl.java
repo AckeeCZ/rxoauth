@@ -15,7 +15,12 @@ import cz.ackee.sample.model.SampleItem;
 import cz.ackee.sample.model.rest.ApiDescription;
 import cz.ackee.sample.model.rest.ApiDescriptionImpl;
 import cz.ackee.sample.model.rest.ApiDescriptionWrapped;
+import io.reactivex.Completable;
+import io.reactivex.CompletableTransformer;
 import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.Single;
+import io.reactivex.SingleTransformer;
 
 /**
  * Implementation of api
@@ -32,7 +37,22 @@ public class ApiInteractorImpl implements IApiInteractor {
             Log.d(TAG, "ApiInteractorImpl: should logout");
             App.getInstance().startActivity(new Intent(App.getInstance(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         });
-        IComposeWrapper wrapper = rxOauth::wrapWithOAuthHandlingObservable;
+        IComposeWrapper wrapper = new IComposeWrapper() {
+            @Override
+            public <T> ObservableTransformer<T, T> wrapObservable() {
+                return rxOauth.wrapWithOAuthHandlingObservable();
+            }
+
+            @Override
+            public <T> SingleTransformer<T, T> wrapSingle() {
+                return rxOauth.wrapWithOAuthHandlingSingle();
+            }
+
+            @Override
+            public CompletableTransformer wrapCompletable() {
+                return rxOauth.wrapWithOAuthHandlingCompletable();
+            }
+        };
         apiDescription = new ApiDescriptionImpl();
         this.apiWrapper = new ApiDescriptionWrapped(apiDescription, wrapper);
     }
@@ -45,12 +65,21 @@ public class ApiInteractorImpl implements IApiInteractor {
 
     @Override
     public Observable<List<SampleItem>> getData() {
-       return apiWrapper.getData()
-                .compose(rxOauth.wrapWithOAuthHandlingObservable());
+        return apiWrapper.getData();
     }
 
     @Override
     public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
         return apiWrapper.refreshAccessToken(refreshToken);
+    }
+
+    @Override
+    public Single<String> something() {
+        return apiWrapper.something();
+    }
+
+    @Override
+    public Completable logout() {
+        return apiWrapper.logout();
     }
 }

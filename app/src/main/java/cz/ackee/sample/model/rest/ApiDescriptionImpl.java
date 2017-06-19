@@ -7,7 +7,9 @@ import java.util.Random;
 import cz.ackee.rxoauth.ICredentialsModel;
 import cz.ackee.sample.model.LoginResponse;
 import cz.ackee.sample.model.SampleItem;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.BufferedSource;
@@ -85,5 +87,15 @@ public class ApiDescriptionImpl implements ApiDescription {
                     }
                 })
                 .map(resp -> resp);
+    }
+
+    @Override
+    public Completable logout() {
+        return Completable.complete();
+    }
+
+    @Override
+    public Single<String> something() {
+        return Single.just("");
     }
 }

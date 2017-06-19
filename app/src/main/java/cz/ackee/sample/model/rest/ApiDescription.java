@@ -3,11 +3,13 @@ package cz.ackee.sample.model.rest;
 import java.util.List;
 
 import cz.ackee.rxoauth.ICredentialsModel;
-import cz.ackee.wrapper.annotations.NoCompose;
-import cz.ackee.wrapper.annotations.WrappedService;
 import cz.ackee.sample.model.LoginResponse;
 import cz.ackee.sample.model.SampleItem;
+import cz.ackee.wrapper.annotations.NoCompose;
+import cz.ackee.wrapper.annotations.WrappedService;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 /**
  * Api description simulating Retrofit description
@@ -24,4 +26,8 @@ public interface ApiDescription {
 
     @NoCompose
     Observable<ICredentialsModel> refreshAccessToken(String refreshToken);
+
+    Completable logout();
+
+    Single<String> something();
 }
