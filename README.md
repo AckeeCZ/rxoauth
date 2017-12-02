@@ -74,3 +74,5 @@ public ApiInteractorImpl(OAuthStore oAuthStore, ApiDescription apiDescription) {
 ## CHANGELOG
 ### 1.0.0
 - Release of lib with RxJava2 support
+### 1.0.3
+- Abstract checker for errors to give user ability to change behavior when to refresh token

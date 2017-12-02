@@ -3,7 +3,6 @@ package cz.ackee.rxoauth;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.net.HttpURLConnection;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
@@ -19,7 +18,6 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import okhttp3.Interceptor;
-import retrofit2.HttpException;
 
 /**
  * Rx managing of Oauth2 logic
@@ -31,6 +29,7 @@ public class RxOauthManager {
     private final IAuthService authService;
     private final IOauthEventListener eventListener;
     private Observable<ICredentialsModel> refreshTokenObservable;
+    private ErrorChecker errorChecker = new DefaultErrorChecker();
 
     public RxOauthManager(SharedPreferences sp, IAuthService apiInteractor, IOauthEventListener eventListener) {
         this.oAuthStore = new OAuthStore(sp);
@@ -88,8 +87,7 @@ public class RxOauthManager {
                 return upstream.onErrorResumeNext(new Function<Throwable, Observable<? extends T>>() {
                     @Override
                     public Observable<? extends T> apply(final Throwable throwable) throws Exception {
-                        if (isUnAuthorizedError(throwable)) {
-                            Logger.d("Access token expired");
+                        if (errorChecker.isExpiredAccessToken(throwable)) {
                             return refreshTokenObservable
                                     .flatMap(new Function<ICredentialsModel, Observable<T>>() {
                                         @Override
@@ -119,7 +117,7 @@ public class RxOauthManager {
                         .onErrorResumeNext(new Function<Throwable, SingleSource<? extends T>>() {
                             @Override
                             public SingleSource<? extends T> apply(final Throwable throwable) throws Exception {
-                                if (isUnAuthorizedError(throwable)) {
+                                if (errorChecker.isExpiredAccessToken(throwable)) {
                                     return refreshTokenObservable
                                             .flatMapSingle(new Function<ICredentialsModel, Single<T>>() {
                                                 @Override
@@ -148,7 +146,7 @@ public class RxOauthManager {
                         .onErrorResumeNext(new Function<Throwable, CompletableSource>() {
                             @Override
                             public CompletableSource apply(final Throwable throwable) throws Exception {
-                                if (isUnAuthorizedError(throwable)) {
+                                if (errorChecker.isExpiredAccessToken(throwable)) {
                                     return refreshTokenObservable
                                             .flatMapCompletable(new Function<ICredentialsModel, Completable>() {
                                                 @Override
@@ -176,31 +174,12 @@ public class RxOauthManager {
                 .doOnError(new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) {
-                        if (isBadRequestError(throwable)) {
-                            Logger.d("Refresh token expired");
+                        if (errorChecker.isBadRefreshToken(throwable)) {
                             oAuthStore.onLogout();
                             eventListener.onRefreshTokenFailed();
                         }
                     }
                 });
-    }
-
-    private boolean isUnAuthorizedError(Throwable error) {
-        if (error instanceof HttpException) {
-            if (((HttpException) error).code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isBadRequestError(Throwable error) {
-        if (error instanceof HttpException) {
-            if (((HttpException) error).code() == HttpURLConnection.HTTP_BAD_REQUEST || ((HttpException) error).code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void storeCredentials(ICredentialsModel credentialsModel) {
