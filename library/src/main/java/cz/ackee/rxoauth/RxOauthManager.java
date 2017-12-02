@@ -52,6 +52,10 @@ public class RxOauthManager {
         initRefreshTokenObservable();
     }
 
+    public void setErrorChecker(ErrorChecker errorChecker) {
+        this.errorChecker = errorChecker;
+    }
+
     public Interceptor getAuthInterceptor() {
         return new AuthInterceptor(this.oAuthStore);
     }
