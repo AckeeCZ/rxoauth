@@ -2,8 +2,6 @@
 
 Simple reactive extension, that adds support to Retrofit2 based projects which uses OAuth2 authentication. 
 
-This library is based on RxJava2
-
 ### Description
 Library will handle posting only one refresh token request in cases where multiple simultaneous requests are fired to server and 401 is returned to all of them.
 
@@ -11,7 +9,7 @@ When refreshing token fails, client is notified via Event listener that is passe
 
 ### Dependencies
 ```groovy
-compile 'cz.ackee.rxoauth:rxoauth2:x.x.x'
+compile 'cz.ackee.rxoauth:rxoauth:x.x.x'
 
 ```
 
