@@ -5,8 +5,7 @@ import android.content.SharedPreferences;
 
 /**
  * Store of oauth2 credentials
- * Created by David Bilik[david.bilik@ackee.cz] on {03/03/16}
- **/
+ */
 public class OAuthStore {
     public static final String TAG = OAuthStore.class.getName();
     private static final String SP_NAME = "oauth2";

@@ -11,7 +11,7 @@ When refreshing token fails, client is notified via Event listener that is passe
 
 ### Dependencies
 ```groovy
-compile 'cz.ackee.rxoauth:rxoauth2:1.0.0'
+compile 'cz.ackee.rxoauth:rxoauth2:x.x.x'
 
 ```
 

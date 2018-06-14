@@ -10,8 +10,7 @@ import okhttp3.Response;
 
 /**
  * Interceptor for oauth2 authorization
- * Created by David Bilik[david.bilik@ackee.cz] on {03/03/16}
- **/
+ */
 public class AuthInterceptor implements Interceptor {
     public static final String TAG = AuthInterceptor.class.getName();
 

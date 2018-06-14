@@ -6,10 +6,7 @@ import retrofit2.HttpException;
 
 /**
  * Default errro checker that checks for 401 for expired access token and 401 + 400 for bad refresh of token
- *
- * @author David Bilik [david.bilik@ackee.cz]
- * @since 02/12/2017
- **/
+ */
 public class DefaultErrorChecker implements ErrorChecker {
     @Override
     public boolean isExpiredAccessToken(Throwable t) {
