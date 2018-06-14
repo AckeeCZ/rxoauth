@@ -1,17 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 28
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "cz.ackee.rxoauth.sample"
         minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 28
+        versionCode = libProperties['VERSION_CODE']
+        versionName libProperties['VERSION_NAME']
     }
     buildTypes {
         release {
@@ -39,27 +38,28 @@ android {
 }
 
 ext {
-    supportLibVersion = '23.4.0'
-    retrofitVersion = '2.0.2'
+    supportLibVersion = '27.1.1'
+    retrofitVersion = '2.2.0'
     okHttpVersion = '3.2.0'
     rxBindingsVersion = '0.4.0'
 }
 
 dependencies {
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
 
-    compile 'com.android.support:appcompat-v7:24.1.1'
+    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
 
-    compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
-    compile "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}"
-    compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
-    compile 'io.reactivex:rxandroid:1.2.1'
+    implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
+    implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
 
-    apt"cz.ackee.rxwrapper:processor:0.1.1"
-    compile "cz.ackee.rxwrapper:annotations:0.1.1"
+    annotationProcessor "cz.ackee.rxwrapper2:processor:1.0.1"
+    implementation "cz.ackee.rxwrapper2:annotations:1.0.1"
 
-    compile project(":library")
+    implementation project(':rxoauth')
 }
 

@@ -2,7 +2,7 @@
 
 Simple reactive extension, that adds support to Retrofit2 based projects which uses OAuth2 authentication. 
 
-
+This library is based on RxJava2
 
 ### Description
 Library will handle posting only one refresh token request in cases where multiple simultaneous requests are fired to server and 401 is returned to all of them.
@@ -11,7 +11,7 @@ When refreshing token fails, client is notified via Event listener that is passe
 
 ### Dependencies
 ```groovy
-compile 'cz.ackee.rxoauth:rxoauth:1.0.3'
+compile 'cz.ackee.rxoauth:rxoauth2:x.x.x'
 
 ```
 
@@ -63,7 +63,7 @@ public ApiInteractorImpl(OAuthStore oAuthStore, ApiDescription apiDescription) {
 
         apiWrapper = new ApiDescriptionWrapped(apiDescription, new IComposeWrapper() {
             @Override
-            public <T> Observable.Transformer<T, T> wrap() {
+            public <T> ObservableTransformer<T, T> wrap() {
                 return rxOauthManaging.wrapWithOAuthHandling();
             }
         });
@@ -72,5 +72,7 @@ public ApiInteractorImpl(OAuthStore oAuthStore, ApiDescription apiDescription) {
 
 
 ## CHANGELOG
+### 1.0.0
+- Release of lib with RxJava2 support
 ### 1.0.3
-- When checking for unsuccessful refresh of access token, status code 401 is taken as error along with SC 400
+- Abstract checker for errors to give user ability to change behavior when to refresh token

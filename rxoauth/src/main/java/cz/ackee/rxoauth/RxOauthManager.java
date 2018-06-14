@@ -16,8 +16,7 @@ import rx.functions.Func1;
 
 /**
  * Rx managing of Oauth2 logic
- * Created by David Bilik[david.bilik@ackee.cz] on {23/03/16}
- **/
+ */
 public class RxOauthManager {
     public static final String TAG = RxOauthManager.class.getName();
     private final OAuthStore oAuthStore;
