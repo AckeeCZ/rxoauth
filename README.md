@@ -1,3 +1,5 @@
+[ ![Download](https://api.bintray.com/packages/ackeecz/rxoauth2/rxoauth/images/download.svg) ](https://bintray.com/ackeecz/rxoauth2/rxoauth/_latestVersion)
+
 # RxOauth2 Android Library
 
 Simple reactive extension, that adds support to Retrofit2 based projects which uses OAuth2 authentication. 
