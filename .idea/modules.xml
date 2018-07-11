@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/RxOauth.iml" filepath="$PROJECT_DIR$/RxOauth.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-rx-oauth2.iml" filepath="$PROJECT_DIR$/android-rx-oauth2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rx-oauth2.iml" filepath="$PROJECT_DIR$/rx-oauth2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rxoauth/rxoauth.iml" filepath="$PROJECT_DIR$/rxoauth/rxoauth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rxoauth.iml" filepath="$PROJECT_DIR$/rxoauth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rxoauth/rxoauth-rxoauth.iml" filepath="$PROJECT_DIR$/rxoauth/rxoauth-rxoauth.iml" />
     </modules>
   </component>
 </project>

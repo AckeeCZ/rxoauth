@@ -15,8 +15,7 @@ import static junit.framework.Assert.assertNull;
 
 /**
  * Test for oauth store
- * Created by David Bilik[david.bilik@ackee.cz] on {05/08/16}
- **/
+ */
 @RunWith(JUnit4.class)
 public class OAuthStoreTest {
 

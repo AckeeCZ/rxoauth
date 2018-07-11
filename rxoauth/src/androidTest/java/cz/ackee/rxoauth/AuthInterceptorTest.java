@@ -19,8 +19,7 @@ import static org.junit.Assert.*;
 
 /**
  * Test for auth okhttp3 interceptor
- * Created by David Bilik[david.bilik@ackee.cz] on {05/08/16}
- **/
+*/
 @RunWith(JUnit4.class)
 public class AuthInterceptorTest {
 

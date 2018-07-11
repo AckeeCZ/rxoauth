@@ -24,8 +24,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link RxOauthManager} class
- * Created by David Bilik[david.bilik@ackee.cz] on {05/08/16}
- **/
+=*/
 public class RxOauthManagerTest {
 
     private boolean firstRun;
@@ -37,14 +36,14 @@ public class RxOauthManagerTest {
 
     @Test
     public void testSuccessFullRequest() {
-        IAuthService authService = new IAuthService() {
+        RefreshTokenService authService = new RefreshTokenService() {
             @Override
-            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<OauthCredentials> refreshAccessToken(String refreshToken) {
                 return null;
             }
         };
 
-        IOauthEventListener eventListener = new IOauthEventListener() {
+        RefreshTokenFailListener eventListener = new RefreshTokenFailListener() {
             @Override
             public void onRefreshTokenFailed() {
 
@@ -57,7 +56,7 @@ public class RxOauthManagerTest {
 
     @Test
     public void testExpiredAccessToken() {
-        final ICredentialsModel mockedCredentials = mock(ICredentialsModel.class);
+        final OauthCredentials mockedCredentials = mock(OauthCredentials.class);
         final HttpException unauthorizedException = new HttpException(retrofit2.Response.error(401, new ResponseBody() {
             @Override
             public MediaType contentType() {
@@ -77,14 +76,14 @@ public class RxOauthManagerTest {
 
         when(mockedCredentials.getAccessToken()).thenReturn("abc");
         when(mockedCredentials.getRefreshToken()).thenReturn("def");
-        IAuthService authService = new IAuthService() {
+        RefreshTokenService authService = new RefreshTokenService() {
             @Override
-            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<OauthCredentials> refreshAccessToken(String refreshToken) {
                 return Observable.just(mockedCredentials);
             }
         };
 
-        IOauthEventListener eventListener = new IOauthEventListener() {
+        RefreshTokenFailListener eventListener = new RefreshTokenFailListener() {
             @Override
             public void onRefreshTokenFailed() {
 
@@ -109,7 +108,7 @@ public class RxOauthManagerTest {
 
     @Test
     public void testExpiredAccessTokenSingle() {
-        final ICredentialsModel mockedCredentials = mock(ICredentialsModel.class);
+        final OauthCredentials mockedCredentials = mock(OauthCredentials.class);
         final HttpException unauthorizedException = new HttpException(retrofit2.Response.error(401, new ResponseBody() {
             @Override
             public MediaType contentType() {
@@ -129,14 +128,14 @@ public class RxOauthManagerTest {
 
         when(mockedCredentials.getAccessToken()).thenReturn("abc");
         when(mockedCredentials.getRefreshToken()).thenReturn("def");
-        IAuthService authService = new IAuthService() {
+        RefreshTokenService authService = new RefreshTokenService() {
             @Override
-            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<OauthCredentials> refreshAccessToken(String refreshToken) {
                 return Observable.just(mockedCredentials);
             }
         };
 
-        IOauthEventListener eventListener = new IOauthEventListener() {
+        RefreshTokenFailListener eventListener = new RefreshTokenFailListener() {
             @Override
             public void onRefreshTokenFailed() {
 
@@ -161,7 +160,7 @@ public class RxOauthManagerTest {
 
     @Test
     public void testExpiredAccessTokenCompletable() {
-        final ICredentialsModel mockedCredentials = mock(ICredentialsModel.class);
+        final OauthCredentials mockedCredentials = mock(OauthCredentials.class);
         final HttpException unauthorizedException = new HttpException(retrofit2.Response.error(401, new ResponseBody() {
             @Override
             public MediaType contentType() {
@@ -181,14 +180,14 @@ public class RxOauthManagerTest {
 
         when(mockedCredentials.getAccessToken()).thenReturn("abc");
         when(mockedCredentials.getRefreshToken()).thenReturn("def");
-        IAuthService authService = new IAuthService() {
+        RefreshTokenService authService = new RefreshTokenService() {
             @Override
-            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<OauthCredentials> refreshAccessToken(String refreshToken) {
                 return Observable.just(mockedCredentials);
             }
         };
 
-        IOauthEventListener eventListener = new IOauthEventListener() {
+        RefreshTokenFailListener eventListener = new RefreshTokenFailListener() {
             @Override
             public void onRefreshTokenFailed() {
 
@@ -215,16 +214,16 @@ public class RxOauthManagerTest {
 
     @Test
     public void testExpiredRefreshToken() {
-        final ICredentialsModel mockedCredentials = mock(ICredentialsModel.class);
+        final OauthCredentials mockedCredentials = mock(OauthCredentials.class);
         final HttpException unauthorizedException = new HttpException(retrofit2.Response.error(401, mock(ResponseBody.class)));
         final HttpException badRequestException = new HttpException(retrofit2.Response.error(400, mock(ResponseBody.class)));
-        final IOauthEventListener eventListener = mock(IOauthEventListener.class);
+        final RefreshTokenFailListener eventListener = mock(RefreshTokenFailListener.class);
         when(mockedCredentials.getAccessToken()).thenReturn("abc");
         when(mockedCredentials.getRefreshToken()).thenReturn("def");
 
-        IAuthService authService = new IAuthService() {
+        RefreshTokenService authService = new RefreshTokenService() {
             @Override
-            public Observable<ICredentialsModel> refreshAccessToken(String refreshToken) {
+            public Observable<OauthCredentials> refreshAccessToken(String refreshToken) {
                 return Observable.error(badRequestException);
             }
         };

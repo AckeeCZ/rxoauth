@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -22,19 +23,20 @@ android {
 
 ext {
     supportLibVersion = '27.1.1'
-    retrofitVersion = '2.2.0'
+    retrofitVersion = '2.4.0'
     okHttpVersion = '3.2.0'
+    rxJavaVersion = '2.1.16'
+    jsr305Version = '3.0.2'
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
 
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
-
-    implementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "com.google.code.findbugs:jsr305:$jsr305Version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // testing related dependencies
     // Required -- JUnit 4 framework
