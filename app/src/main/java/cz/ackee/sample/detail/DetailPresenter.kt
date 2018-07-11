@@ -2,7 +2,8 @@ package cz.ackee.sample.detail
 
 import cz.ackee.sample.interactor.ApiInteractorImpl
 import cz.ackee.sample.model.SampleItem
-import io.reactivex.functions.Consumer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Presenter for detail screen
@@ -27,7 +28,9 @@ class DetailPresenter {
     fun refresh() {
         apiInteractor
                 .data
-                .subscribe(Consumer<List<SampleItem>> { this.onDataLoaded(it) }, Consumer<Throwable> { this.onErrorHappened(it) })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ this.onDataLoaded(it) }, { this.onErrorHappened(it) })
     }
 
     private fun onErrorHappened(throwable: Throwable) {
@@ -36,8 +39,6 @@ class DetailPresenter {
 
     private fun onDataLoaded(sampleItems: List<SampleItem>) {
         this.items = sampleItems
-        if (view != null) {
-            view!!.showData(sampleItems)
-        }
+        view?.showData(sampleItems)
     }
 }

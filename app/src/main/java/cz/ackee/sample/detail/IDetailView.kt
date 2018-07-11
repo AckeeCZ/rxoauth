@@ -4,7 +4,6 @@ import cz.ackee.sample.model.SampleItem
 
 /**
  * View of detail screen
- * Created by David Bilik[david.bilik@ackee.cz] on {05/08/16}
  */
 interface IDetailView {
 

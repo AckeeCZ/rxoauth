@@ -5,4 +5,4 @@ import cz.ackee.rxoauth.OauthCredentials
 /**
  * Response for login
  */
-class LoginResponse(var name: String, override var accessToken: String, override var refreshToken: String) : OauthCredentials
+data class LoginResponse(var name: String, override var accessToken: String, override var refreshToken: String) : OauthCredentials

@@ -10,7 +10,6 @@ import cz.ackee.sample.detail.DetailActivity
 
 class MainActivity : AppCompatActivity(), ILoginView {
 
-
     private var presenter: LoginPresenter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

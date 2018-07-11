@@ -11,14 +11,11 @@ import io.reactivex.Single;
 
 /**
  * Interactor for communicating with API
- * Created by David Bilik[david.bilik@ackee.cz] on {05/08/16}
- **/
+ */
 public interface IApiInteractor extends RefreshTokenService {
     Single<LoginResponse> login(String name, String password);
 
     Single<List<SampleItem>> getData();
 
     Completable logout();
-
-    Single<String> something();
 }
