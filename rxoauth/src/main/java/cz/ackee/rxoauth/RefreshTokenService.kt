@@ -7,5 +7,5 @@ import io.reactivex.Single
  */
 interface RefreshTokenService {
 
-    fun refreshAccessToken(refreshToken: String): Single<OauthCredentials>
+    fun refreshAccessToken(refreshToken: String?): Single<OauthCredentials>
 }

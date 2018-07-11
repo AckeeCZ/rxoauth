@@ -15,7 +15,7 @@ interface ApiDescription {
 
     fun login(name: String, passwd: String): Single<LoginResponse>
 
-    fun refreshAccessToken(refreshToken: String): Single<OauthCredentials>
+    fun refreshAccessToken(refreshToken: String?): Single<OauthCredentials>
 
     fun logout(): Completable
 

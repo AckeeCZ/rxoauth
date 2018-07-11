@@ -48,7 +48,7 @@ class ApiDescriptionImpl : ApiDescription {
                 }
     }
 
-    override fun refreshAccessToken(refreshToken: String): Single<OauthCredentials> {
+    override fun refreshAccessToken(refreshToken: String?): Single<OauthCredentials> {
         val first = booleanArrayOf(true)
         return Single.just(LoginResponse("David", "123", "456"))
                 .flatMap { data ->

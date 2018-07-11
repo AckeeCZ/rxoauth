@@ -16,10 +16,10 @@ class OAuthStore {
 
     private val sp: SharedPreferences
 
-    val accessToken: String
+    val accessToken: String?
         get() = sp.getString(ACCESS_TOKEN_KEY, null)
 
-    val refreshToken: String
+    val refreshToken: String?
         get() = sp.getString(REFRESH_TOKEN_KEY, null)
 
     constructor(ctx: Context) {

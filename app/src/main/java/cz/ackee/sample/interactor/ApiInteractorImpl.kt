@@ -44,7 +44,7 @@ class ApiInteractorImpl : IApiInteractor {
                 .compose(rxOauth.wrapWithOAuthHandlingSingle())
     }
 
-    override fun refreshAccessToken(refreshToken: String): Single<OauthCredentials> {
+    override fun refreshAccessToken(refreshToken: String?): Single<OauthCredentials> {
         return apiDescription.refreshAccessToken(refreshToken)
     }
 
