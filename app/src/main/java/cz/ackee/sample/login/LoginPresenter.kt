@@ -1,6 +1,6 @@
 package cz.ackee.sample.login
 
-import cz.ackee.sample.interactor.ApiInteractorImpl
+import cz.ackee.sample.App
 import cz.ackee.sample.model.LoginResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
  */
 class LoginPresenter {
 
-    private val apiInteractor: ApiInteractorImpl = ApiInteractorImpl()
+    private val apiInteractor = App.diContainer.apiInteractor
     private var view: ILoginView? = null
 
     fun login(name: String, password: String) {

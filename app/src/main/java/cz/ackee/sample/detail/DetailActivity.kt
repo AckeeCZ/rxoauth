@@ -40,7 +40,28 @@ class DetailActivity : ListActivity(), IDetailView {
                     presenter!!.refresh()
                     false
                 }
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+
+        menu.add("Invalidate access token")
+                .setOnMenuItemClickListener {
+                    presenter!!.invalidateAccessToken()
+                    false
+                }
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+
+        menu.add("Invalidate refresh token")
+                .setOnMenuItemClickListener {
+                    presenter!!.invalidateRefreshToken()
+                    false
+                }
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+
+        menu.add("Logout")
+                .setOnMenuItemClickListener {
+                    presenter!!.logout()
+                    false
+                }
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return super.onCreateOptionsMenu(menu)
     }
 }
