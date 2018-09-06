@@ -27,6 +27,7 @@ public class RxOauthManager {
     private final OAuthStore oAuthStore;
     private final IAuthService authService;
     private final IOauthEventListener eventListener;
+    private final RefreshTokenFailedListener refreshTokenFailedListener;
     private Observable<ICredentialsModel> refreshTokenObservable;
     private ErrorChecker errorChecker = new DefaultErrorChecker();
 
@@ -34,6 +35,7 @@ public class RxOauthManager {
         this.oAuthStore = new OAuthStore(sp);
         this.authService = apiInteractor;
         this.eventListener = eventListener;
+        this.refreshTokenFailedListener = null;
         initRefreshTokenObservable();
     }
 
@@ -41,6 +43,7 @@ public class RxOauthManager {
         this.oAuthStore = new OAuthStore(ctx);
         this.authService = apiInteractor;
         this.eventListener = eventListener;
+        this.refreshTokenFailedListener = null;
         initRefreshTokenObservable();
     }
 
@@ -48,6 +51,31 @@ public class RxOauthManager {
         this.oAuthStore = store;
         this.authService = apiInteractor;
         this.eventListener = eventListener;
+        this.refreshTokenFailedListener = null;
+        initRefreshTokenObservable();
+    }
+
+    public RxOauthManager(SharedPreferences sp, IAuthService apiInteractor, RefreshTokenFailedListener eventListener) {
+        this.oAuthStore = new OAuthStore(sp);
+        this.authService = apiInteractor;
+        this.eventListener = null;
+        this.refreshTokenFailedListener = eventListener;
+        initRefreshTokenObservable();
+    }
+
+    public RxOauthManager(Context ctx, IAuthService apiInteractor, RefreshTokenFailedListener eventListener) {
+        this.oAuthStore = new OAuthStore(ctx);
+        this.authService = apiInteractor;
+        this.eventListener = null;
+        this.refreshTokenFailedListener = eventListener;
+        initRefreshTokenObservable();
+    }
+
+    public RxOauthManager(OAuthStore store, IAuthService apiInteractor, RefreshTokenFailedListener eventListener) {
+        this.oAuthStore = store;
+        this.authService = apiInteractor;
+        this.eventListener = null;
+        this.refreshTokenFailedListener = eventListener;
         initRefreshTokenObservable();
     }
 
@@ -179,7 +207,12 @@ public class RxOauthManager {
                     public void accept(Throwable throwable) {
                         if (errorChecker.isBadRefreshToken(throwable)) {
                             oAuthStore.onLogout();
-                            eventListener.onRefreshTokenFailed();
+                            if (eventListener != null) {
+                                eventListener.onRefreshTokenFailed();
+                            }
+                            if (refreshTokenFailedListener != null) {
+                                refreshTokenFailedListener.onRefreshTokenFailed(throwable);
+                            }
                         }
                     }
                 });
