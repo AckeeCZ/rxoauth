@@ -9,7 +9,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Interceptor for oauth2 authorization
+ * Interceptor that adds Authorization header to all requests if access token is saved.
  */
 public class AuthInterceptor implements Interceptor {
     public static final String TAG = AuthInterceptor.class.getName();
