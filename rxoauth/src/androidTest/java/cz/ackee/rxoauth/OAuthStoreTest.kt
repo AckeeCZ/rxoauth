@@ -1,9 +1,10 @@
 package cz.ackee.rxoauth
 
 import android.content.Context
-import android.support.test.InstrumentationRegistry.getTargetContext
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNull
+import androidx.test.InstrumentationRegistry.getTargetContext
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,55 +16,66 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class OAuthStoreTest {
 
+    private val accessToken = "abc"
+    private val refreshToken = "def"
+    private val expiresIn = 3600L
+    private val toleranceInterval = 5L
+
     @Before
-    fun clean() {
-        var store = OAuthStore(getTargetContext())
-        store.onLogout()
-        store = OAuthStore(getTargetContext().getSharedPreferences("sp", Context.MODE_PRIVATE))
-        store.onLogout()
+    fun setup() {
+        cleanStore()
     }
 
+    @After
+    fun clean() {
+        cleanStore()
+    }
+
+    @Test
     @Throws(Exception::class)
     fun testSaveOauthCredentialsContextConstructor() {
         val store = OAuthStore(getTargetContext())
-        store.saveOauthCredentials("a", "b")
-        assertEquals(store.accessToken, "a")
+        store.saveOauthCredentials(DefaultOauthCredentials(accessToken, refreshToken, expiresIn))
+        assertEquals(accessToken, store.accessToken)
+        assertEquals(refreshToken, store.refreshToken)
     }
 
     @Test
     @Throws(Exception::class)
-    fun testGetAccessToken() {
-        val store = OAuthStore(getTargetContext())
-        store.saveOauthCredentials("abc", "def")
-        assertEquals(store.accessToken, "abc")
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun testGetRefreshToken() {
-        val store = OAuthStore(getTargetContext())
-        store.saveOauthCredentials("abc", "def")
-        assertEquals(store.refreshToken, "def")
+    fun testSaveOauthCredentialsSpConstructor() {
+        val sp = getTargetContext().getSharedPreferences(OAuthStore.SP_NAME, Context.MODE_PRIVATE)
+        val store = OAuthStore(sp)
+        store.saveOauthCredentials(DefaultOauthCredentials(accessToken, refreshToken, expiresIn))
+        assertEquals(accessToken, store.accessToken)
+        assertEquals(refreshToken, store.refreshToken)
+        val expiresAtApprox = System.currentTimeMillis() + expiresIn * 1000
+        assertTrue(store.expiresAt in expiresAtApprox - toleranceInterval..expiresAtApprox + toleranceInterval)
     }
 
     @Test
     @Throws(Exception::class)
     fun testOnLogout() {
         val store = OAuthStore(getTargetContext())
-        store.saveOauthCredentials("abc", "def")
-        assertEquals(store.accessToken, "abc")
+        store.saveOauthCredentials(DefaultOauthCredentials(accessToken, refreshToken, expiresIn))
         store.onLogout()
-        assertEquals(store.accessToken, null)
+        assertEquals(null, store.accessToken)
+        assertEquals(null, store.refreshToken)
+        assertEquals(null, store.expiresAt)
     }
 
     @Test
     @Throws(Exception::class)
-    fun testSaveOauthCredentials1() {
-        val sp = getTargetContext().getSharedPreferences("sp", Context.MODE_PRIVATE)
-        assertNull(sp.getString("oath2_access_token", null))
-        val store = OAuthStore(sp)
-        store.saveOauthCredentials("a", "b")
-        assertEquals(store.accessToken, sp.getString("oath2_access_token", null))
-        // clean
+    fun testKeysMigration() {
+        val sp = getTargetContext().getSharedPreferences(OAuthStore.SP_NAME, Context.MODE_PRIVATE)
+        sp.edit().putString(OAuthStore.ACCESS_TOKEN_KEY_OLD, accessToken).putString(OAuthStore.REFRESH_TOKEN_KEY_OLD, refreshToken).apply()
+        val store = OAuthStore(getTargetContext())
+        assertEquals(accessToken, store.accessToken)
+        assertEquals(refreshToken, store.refreshToken)
+        assertEquals(null, sp.getString(OAuthStore.ACCESS_TOKEN_KEY_OLD, null))
+        assertEquals(null, sp.getString(OAuthStore.REFRESH_TOKEN_KEY_OLD, null))
+    }
+
+    private fun cleanStore() {
+        OAuthStore(getTargetContext()).onLogout()
     }
 }

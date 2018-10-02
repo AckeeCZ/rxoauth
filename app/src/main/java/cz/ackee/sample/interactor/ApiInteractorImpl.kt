@@ -1,8 +1,8 @@
 package cz.ackee.sample.interactor
 
+import cz.ackee.rxoauth.DefaultOauthCredentials
 import cz.ackee.rxoauth.OAuthStore
 import cz.ackee.rxoauth.OauthCredentials
-import cz.ackee.sample.model.LoginResponse
 import cz.ackee.sample.model.SampleItem
 import cz.ackee.sample.model.rest.ApiDescription
 import cz.ackee.sample.model.rest.AuthApiDescription
@@ -16,7 +16,7 @@ class ApiInteractorImpl(private val oauthStore: OAuthStore,
                         private val apiDescription: ApiDescription,
                         private val authApiDescription: AuthApiDescription) : IApiInteractor {
 
-    override fun login(name: String, password: String): Single<LoginResponse> {
+    override fun login(name: String, password: String): Single<DefaultOauthCredentials> {
         return authApiDescription.login(name, password)
                 .doOnSuccess { this.oauthStore.saveOauthCredentials(it) }
     }

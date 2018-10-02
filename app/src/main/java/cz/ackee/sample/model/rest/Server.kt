@@ -19,6 +19,7 @@ class Server(val context: Context) {
 
     var accessToken: String? = null
     var refreshToken: String? = null
+    var expiresIn = 15L
 
     var itemsList = """[
         {
@@ -37,7 +38,8 @@ class Server(val context: Context) {
         {
             "name" : "John Doe",
             "accessToken" : "%s",
-            "refreshToken" : "%s"
+            "refreshToken" : "%s",
+            "expiresIn" : "%d"
         }
     """.trimIndent()
 
@@ -66,7 +68,7 @@ class Server(val context: Context) {
             refreshToken = UUID.randomUUID().toString()
             MockResponse()
                     .setResponseCode(200)
-                    .setBody(loginResponse.format(accessToken, refreshToken))
+                    .setBody(loginResponse.format(accessToken, refreshToken, expiresIn))
 
         })
 
@@ -80,7 +82,7 @@ class Server(val context: Context) {
                 refreshToken = UUID.randomUUID().toString()
                 MockResponse()
                         .setResponseCode(200)
-                        .setBody(loginResponse.format(accessToken, refreshToken))
+                        .setBody(loginResponse.format(accessToken, refreshToken, expiresIn))
             }
         })
 
