@@ -17,9 +17,13 @@ import java.util.concurrent.TimeUnit
  */
 class Server(val context: Context) {
 
-    var accessToken: String? = null
-    var refreshToken: String? = null
-    var expiresIn = 15L
+    companion object {
+        private const val EXPIRES_IN = 15L
+    }
+
+    private var accessToken: String? = null
+    private var refreshToken: String? = null
+    private var tokenExpiration: Long? = null
 
     var itemsList = """[
         {
@@ -34,7 +38,7 @@ class Server(val context: Context) {
     ]
     """.trimIndent()
 
-    var loginResponse = """
+    private var loginResponse = """
         {
             "name" : "John Doe",
             "accessToken" : "%s",
@@ -49,7 +53,11 @@ class Server(val context: Context) {
         RESTMockServer.whenGET(RequestMatchers.pathContains("items")).delay(TimeUnit.MILLISECONDS, 500).thenAnswer(MockAnswer {
             val tokenHeader = it.getHeader("Authorization")
 
-            if (tokenHeader == null || tokenHeader.substring(tokenHeader.indexOf("Bearer ") + "Bearer ".length) != accessToken) {
+            if (
+                    tokenHeader == null ||
+                    tokenHeader.substring(tokenHeader.indexOf("Bearer ") + "Bearer ".length) != accessToken ||
+                    (tokenExpiration != null && System.currentTimeMillis() > tokenExpiration!!)
+            ) {
                 //unauthorized
                 MockResponse()
                         .setResponseCode(401)
@@ -66,9 +74,10 @@ class Server(val context: Context) {
             // accepts any login/password
             accessToken = UUID.randomUUID().toString()
             refreshToken = UUID.randomUUID().toString()
+            tokenExpiration = System.currentTimeMillis() + EXPIRES_IN * 1000
             MockResponse()
                     .setResponseCode(200)
-                    .setBody(loginResponse.format(accessToken, refreshToken, expiresIn))
+                    .setBody(loginResponse.format(accessToken, refreshToken, EXPIRES_IN))
 
         })
 
@@ -80,9 +89,10 @@ class Server(val context: Context) {
             } else {
                 accessToken = UUID.randomUUID().toString()
                 refreshToken = UUID.randomUUID().toString()
+                tokenExpiration = System.currentTimeMillis() + EXPIRES_IN * 1000
                 MockResponse()
                         .setResponseCode(200)
-                        .setBody(loginResponse.format(accessToken, refreshToken, expiresIn))
+                        .setBody(loginResponse.format(accessToken, refreshToken, EXPIRES_IN))
             }
         })
 
