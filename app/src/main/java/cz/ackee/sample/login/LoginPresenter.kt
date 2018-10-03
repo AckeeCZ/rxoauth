@@ -1,7 +1,6 @@
 package cz.ackee.sample.login
 
 import cz.ackee.sample.App
-import cz.ackee.sample.model.LoginResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -17,7 +16,7 @@ class LoginPresenter {
         this.apiInteractor.login(name, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.onLoggedIn(it) }, { this.onErrorHappened(it) })
+                .subscribe({ this.onLoggedIn() }, { this.onErrorHappened(it) })
     }
 
     fun onViewAttached(view: ILoginView) {
@@ -28,7 +27,7 @@ class LoginPresenter {
         this.view = null
     }
 
-    private fun onLoggedIn(loginResponse: LoginResponse) {
+    private fun onLoggedIn() {
         view?.openDetail()
     }
 

@@ -3,16 +3,15 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "27.0.3"
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode = libProperties['VERSION_CODE']
         versionName libProperties['VERSION_NAME']
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -22,40 +21,29 @@ android {
 }
 
 ext {
-    supportLibVersion = '27.1.1'
     retrofitVersion = '2.4.0'
     okHttpVersion = '3.2.0'
-    rxJavaVersion = '2.1.16'
-    jsr305Version = '3.0.2'
+    rxJavaVersion = '2.2.2'
+    junitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    androidTestVersion = '1.1.0-alpha3'
+    annotationVersion = '1.0.0'
+    espressoVersion = '3.1.0-alpha3'
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    testImplementation 'junit:junit:4.12'
-
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
-    implementation "com.google.code.findbugs:jsr305:$jsr305Version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    // testing related dependencies
-    // Required -- JUnit 4 framework
-    androidTestImplementation 'junit:junit:4.12'
-    // Optional -- Mockito framework
-    androidTestImplementation 'org.mockito:mockito-core:1.10.19'
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+
+    androidTestImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
     androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
 
-    androidTestImplementation 'com.android.support.test:runner:0.4.1'
-    androidTestImplementation 'com.android.support.test:rules:0.4.1'
-    androidTestImplementation "com.android.support:support-annotations:${supportLibVersion}"
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.1'
-
-    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.0') {
-        exclude group: 'com.android.support', module: 'appcompat'
-        exclude group: 'com.android.support', module: 'support-v4'
-        exclude module: 'recyclerview-v7'
-    }
+    androidTestImplementation "androidx.test:rules:$androidTestVersion"
 }
 
 ext {

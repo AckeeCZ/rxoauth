@@ -1,8 +1,8 @@
 package cz.ackee.sample.model.rest
 
+import cz.ackee.rxoauth.DefaultOauthCredentials
 import cz.ackee.rxoauth.OauthCredentials
 import cz.ackee.rxoauth.RefreshTokenService
-import cz.ackee.sample.model.LoginResponse
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.POST
@@ -14,10 +14,10 @@ import retrofit2.http.Query
 interface AuthApiDescription {
 
     @POST("login")
-    fun login(@Query("username") name: String, @Query("password") passwd: String): Single<LoginResponse>
+    fun login(@Query("username") name: String, @Query("password") passwd: String): Single<DefaultOauthCredentials>
 
     @POST("refresh_token")
-    fun refreshAccessToken(@Query("refresh_token") refreshToken: String?): Single<LoginResponse>
+    fun refreshAccessToken(@Query("refresh_token") refreshToken: String?): Single<DefaultOauthCredentials>
 
     @POST("logout")
     fun logout(): Completable

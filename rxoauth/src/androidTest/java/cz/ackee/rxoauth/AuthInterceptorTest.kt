@@ -1,7 +1,8 @@
 package cz.ackee.rxoauth
 
-import android.support.test.InstrumentationRegistry.getTargetContext
+import androidx.test.InstrumentationRegistry.getTargetContext
 import okhttp3.*
+import org.junit.After
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -17,86 +18,47 @@ import java.util.concurrent.TimeUnit
 @RunWith(JUnit4::class)
 class AuthInterceptorTest {
 
-    lateinit var store: OAuthStore
-    lateinit var samplerequest: Request
-    lateinit var responseBuilder: Response.Builder
+    private val store: OAuthStore = OAuthStore(getTargetContext())
+
+    private val samplerequest = Request.Builder()
+            .url("https://example.com")
+            .build()
+    private val responseBuilder = Response.Builder()
+            .message("")
+            .protocol(Protocol.HTTP_1_0)
+            .code(200)
 
     @Before
+    fun setup() {
+        cleanStore()
+    }
+
+    @After
     fun clean() {
-        store = OAuthStore(getTargetContext())
-        //to make sure its new
-        store.onLogout()
-        samplerequest = Request.Builder()
-                .url("https://example.com")
-                .build()
-        responseBuilder = Response.Builder()
-                .message("")
-                .protocol(Protocol.HTTP_1_0)
-                .code(200)
-        store.onLogout()
+        cleanStore()
     }
 
     @Test
     @Throws(IOException::class)
     fun testEmptyAuthToken() {
-        val interceptor = AuthInterceptor(store)
-
-        val resp = interceptor.intercept(object : Interceptor.Chain {
-            override fun writeTimeoutMillis(): Int {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun call(): Call {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun withWriteTimeout(timeout: Int, unit: TimeUnit?): Interceptor.Chain {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun connectTimeoutMillis(): Int {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun withConnectTimeout(timeout: Int, unit: TimeUnit?): Interceptor.Chain {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun withReadTimeout(timeout: Int, unit: TimeUnit?): Interceptor.Chain {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun readTimeoutMillis(): Int {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun request(): Request? {
-                return samplerequest
-            }
-
-            @Throws(IOException::class)
-            override fun proceed(request: Request): Response {
-                return responseBuilder!!
-                        .request(request)
-                        .build()
-            }
-
-            override fun connection(): Connection? {
-                return null
-            }
-        })
-        assertNull(resp.request()
-                .header("Authorization"))
+        assertNull(interceptAuth(store, samplerequest, responseBuilder).request().header("Authorization"))
     }
 
     @Test
     @Throws(IOException::class)
     fun testNonEmptyAuthToken() {
-        val interceptor = AuthInterceptor(store!!)
-        store!!.saveOauthCredentials("abc", "def")
-        val resp = interceptor.intercept(object : Interceptor.Chain {
+        store.saveOauthCredentials(DefaultOauthCredentials("abc", "def"))
+        assertTrue(interceptAuth(store, samplerequest, responseBuilder).request().header("Authorization")!!.contains("abc"))
+    }
+
+    private fun cleanStore() {
+        OAuthStore(getTargetContext()).onLogout()
+    }
+
+    private fun interceptAuth(store: OAuthStore, request: Request, responseBuilder: Response.Builder): Response {
+        return AuthInterceptor(store).intercept(object : Interceptor.Chain {
             override fun request(): Request? {
-                return samplerequest
+                return request
             }
 
             @Throws(IOException::class)
@@ -126,7 +88,5 @@ class AuthInterceptorTest {
 
             override fun readTimeoutMillis(): Int = 0
         })
-        assertTrue(resp.request()
-                .header("Authorization")!!.contains("abc"))
     }
 }
