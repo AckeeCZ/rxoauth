@@ -2,7 +2,7 @@ package cz.ackee.sample.di
 
 import cz.ackee.rxoauth.AuthInterceptor
 import cz.ackee.rxoauth.OAuthStore
-import cz.ackee.rxoauth.RefreshTokenFailListener
+import cz.ackee.rxoauth.RefreshTokenFailedListener
 import cz.ackee.rxoauth.RefreshTokenService
 import cz.ackee.rxoauth.adapter.RxOauthCallAdapterFactory
 import cz.ackee.sample.App
@@ -27,7 +27,7 @@ class DIContainer(val app: App) {
 
     val logouter = Logouter(app)
 
-    val refreshTokenFailListener: RefreshTokenFailListener = logouter
+    val refreshTokenFailedListener: RefreshTokenFailedListener = logouter
 
     val retrofitBuilder: Retrofit.Builder
         get() = Retrofit.Builder()
@@ -48,7 +48,7 @@ class DIContainer(val app: App) {
             .addCallAdapterFactory(RxOauthCallAdapterFactory.create(
                     oAuthStore = oauthStore,
                     authService = refreshTokenService,
-                    logoutEvent = refreshTokenFailListener
+                    logoutEvent = refreshTokenFailedListener
             ))
             .build()
             .create(ApiDescription::class.java)

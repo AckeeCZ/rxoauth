@@ -32,7 +32,7 @@ internal class RxOauthCallAdapter<R>(private val responseType: Type,
                                      private val ignoreAuth: Boolean,
                                      private val oAuthStore: OAuthStore,
                                      private val authService: RefreshTokenService,
-                                     private val eventListener: RefreshTokenFailListener,
+                                     private val eventListener: RefreshTokenFailedListener,
                                      private val errorChecker: ErrorChecker
 ) : CallAdapter<R, Any> {
 

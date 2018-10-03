@@ -3,7 +3,7 @@ package cz.ackee.rxoauth
 /**
  * Listener that is notified when refresh of token fails.
  */
-interface RefreshTokenFailListener {
+interface RefreshTokenFailedListener {
 
-    fun onRefreshTokenFailed()
+    fun onRefreshTokenFailed(err: Throwable)
 }

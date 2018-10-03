@@ -10,14 +10,14 @@ import io.reactivex.functions.Function
  */
 class RxOauthManager(private val oAuthStore: OAuthStore,
                      private val refreshTokenService: RefreshTokenService,
-                     private val refreshTokenFailListener: RefreshTokenFailListener,
+                     private val refreshTokenFailedListener: RefreshTokenFailedListener,
                      private val errorChecker: ErrorChecker = DefaultErrorChecker()) {
 
-    constructor(sp: SharedPreferences, refreshTokenService: RefreshTokenService, refreshTokenFailListener: RefreshTokenFailListener, errorChecker: ErrorChecker = DefaultErrorChecker()) :
-            this(OAuthStore(sp), refreshTokenService, refreshTokenFailListener, errorChecker)
+    constructor(sp: SharedPreferences, refreshTokenService: RefreshTokenService, refreshTokenFailedListener: RefreshTokenFailedListener, errorChecker: ErrorChecker = DefaultErrorChecker()) :
+            this(OAuthStore(sp), refreshTokenService, refreshTokenFailedListener, errorChecker)
 
-    constructor(ctx: Context, refreshTokenService: RefreshTokenService, refreshTokenFailListener: RefreshTokenFailListener, errorChecker: ErrorChecker = DefaultErrorChecker()) :
-            this(OAuthStore(ctx), refreshTokenService, refreshTokenFailListener, errorChecker)
+    constructor(ctx: Context, refreshTokenService: RefreshTokenService, refreshTokenFailedListener: RefreshTokenFailedListener, errorChecker: ErrorChecker = DefaultErrorChecker()) :
+            this(OAuthStore(ctx), refreshTokenService, refreshTokenFailedListener, errorChecker)
 
     init {
         initRefreshTokenObservable()
@@ -94,7 +94,7 @@ class RxOauthManager(private val oAuthStore: OAuthStore,
                 .doOnError { throwable ->
                     if (errorChecker.isBadRefreshToken(throwable)) {
                         oAuthStore.onLogout()
-                        refreshTokenFailListener.onRefreshTokenFailed()
+                        refreshTokenFailedListener.onRefreshTokenFailed(throwable)
                     }
                 }
     }

@@ -66,13 +66,13 @@ import java.lang.reflect.Type
  */
 class RxOauthCallAdapterFactory(private val oAuthStore: OAuthStore,
                                 private val authService: RefreshTokenService,
-                                private val oauthEventListener: RefreshTokenFailListener,
+                                private val oauthEventListener: RefreshTokenFailedListener,
                                 private val errorChecker: ErrorChecker
 ) : CallAdapter.Factory() {
 
     companion object {
 
-        fun create(oAuthStore: OAuthStore, authService: RefreshTokenService, logoutEvent: RefreshTokenFailListener, errorChecker: ErrorChecker = DefaultErrorChecker()): RxOauthCallAdapterFactory {
+        fun create(oAuthStore: OAuthStore, authService: RefreshTokenService, logoutEvent: RefreshTokenFailedListener, errorChecker: ErrorChecker = DefaultErrorChecker()): RxOauthCallAdapterFactory {
             return RxOauthCallAdapterFactory(oAuthStore, authService, logoutEvent, errorChecker)
         }
     }

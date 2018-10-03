@@ -26,7 +26,7 @@ class RxOauthManagerTest {
     private val successResult = "ok"
     private val credentials = DefaultOauthCredentials(accessToken, refreshToken, expiresIn)
 
-    private val eventListener = mock(RefreshTokenFailListener::class.java)
+    private val eventListener = mock(RefreshTokenFailedListener::class.java)
     private val unauthorizedException = HttpException(retrofit2.Response.error<Any>(401, mock(ResponseBody::class.java)))
     private val badRequestException = HttpException(retrofit2.Response.error<Any>(400, mock(ResponseBody::class.java)))
 
@@ -154,7 +154,7 @@ class RxOauthManagerTest {
             assertEquals((ex as HttpException).code().toLong(), 400)
         }
 
-        verify(eventListener).onRefreshTokenFailed()
+        verify(eventListener).onRefreshTokenFailed(badRequestException)
     }
 
     private fun cleanStore() {
