@@ -29,18 +29,13 @@ android {
 }
 
 ext {
-    appcompatVersion = '1.0.0'
-    retrofitVersion = '2.4.0'
-    okHttpVersion = '3.10.0'
-    rxJavaVersion = '2.2.2'
-    rxAndroidVersion = '2.1.0'
     restMockVersion = '0.3.1'
     stethoVersion = '1.5.0'
-    junitVersion = '4.12'
 }
 
 dependencies {
-    implementation project(':rxoauth')
+    implementation project(':core')
+    implementation project(':retrofitadapter')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

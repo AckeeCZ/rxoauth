@@ -20,17 +20,6 @@ android {
     }
 }
 
-ext {
-    retrofitVersion = '2.4.0'
-    okHttpVersion = '3.2.0'
-    rxJavaVersion = '2.2.2'
-    junitVersion = '4.12'
-    mockitoVersion = '1.10.19'
-    androidTestVersion = '1.1.0-alpha3'
-    annotationVersion = '1.0.0'
-    espressoVersion = '3.1.0-alpha3'
-}
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
@@ -40,15 +29,14 @@ dependencies {
 
     androidTestImplementation "junit:junit:$junitVersion"
     androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
-    androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
-    androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
-
+    androidTestImplementation "com.google.dexmaker:dexmaker:$dexmakerVersion"
+    androidTestImplementation "com.google.dexmaker:dexmaker-mockito:$dexmakerVersion"
     androidTestImplementation "androidx.test:rules:$androidTestVersion"
 }
 
 ext {
-    bintrayName = 'rxoauth'
-    publishedArtifactId = 'rxoauth'
+    bintrayName = 'core'
+    publishedArtifactId = 'core'
 
     libraryName = 'RxOAuth'
     libraryDescription = 'RxOauth2 Android Library'

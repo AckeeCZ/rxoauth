@@ -1,1 +1,1 @@
-include ':app', ':rxoauth'
+include ':app', ':core', ':retrofitadapter'

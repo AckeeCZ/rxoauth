@@ -30,3 +30,16 @@ task clean(type: Delete) {
  */
 ext.libProperties = new Properties()
 ext.libProperties.load(file("${rootDir}/lib.properties").newReader())
+
+ext {
+    appcompatVersion = '1.0.0'
+    retrofitVersion = '2.4.0'
+    rxJavaVersion = '2.2.2'
+    rxAndroidVersion = '2.1.0'
+    junitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    androidTestVersion = '1.1.0-alpha3'
+    annotationVersion = '1.0.0'
+    espressoVersion = '3.1.0-alpha3'
+    dexmakerVersion = '1.2'
+}
