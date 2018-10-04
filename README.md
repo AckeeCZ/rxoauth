@@ -12,7 +12,7 @@ This library is based on RxJava2.
 
 ### Dependencies
 ```groovy
-compile 'cz.ackee.rxOAuth2:core:x.x.x'
+compile 'cz.ackee.rxoauth2:core:x.x.x'
 ```
 
 ### Usage
@@ -79,7 +79,7 @@ From version 2.0.0, new module is available. Now RxOAuth2 wrapping may be provid
 
 ### Dependencies
 ```groovy
-compile 'cz.ackee.rxOAuth2:retrofit-adapter:x.x.x'
+compile 'cz.ackee.rxoauth2:retrofit-adapter:x.x.x'
 ```
 
 ### Usage
@@ -100,8 +100,8 @@ When creating your API service, just provide `RxOAuthCallAdapterFactory` to Retr
 ### 1.0.3
 - Abstract checker for errors to give user ability to change behavior when to refresh token
 ### 2.0.0
-- Artifact naming change: `cz.ackee.rxOAuth2:rxOAuth` -> `cz.ackee.rxOAuth2:core`
-- New module `Retrofit adapter` is created with artifact `cz.ackee.rxOAuth2:retrofit-adapter`, more on this in section [Retrofit2 adapter](#retrofit2-adapter)
+- Artifact naming change: `cz.ackee.rxoauth2:rxOAuth` -> `cz.ackee.rxoauth2:core`
+- New module `Retrofit adapter` is created with artifact `cz.ackee.rxoauth2:retrofit-adapter`, more on this in section [Retrofit2 adapter](#retrofit2-adapter)
 - `RxOAuthManager` now accepts `Context` or custom `SharedPreferences` in the constructor instead of `OAuthStore`
 - `RxOAuthManager` now uses lambda action `refreshTokenAction: (String) -> Single<OAuthCredentials>` instead of `RefreshTokenService` class
 - `RxOAuthManager` now uses lambda action `onRefreshTokenFailed: (Throwable) -> Unit` instead of `RefreshTokenFailedListener` class.
