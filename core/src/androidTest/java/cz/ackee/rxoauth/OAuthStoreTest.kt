@@ -35,7 +35,7 @@ class OAuthStoreTest {
     @Throws(Exception::class)
     fun testSaveOauthCredentialsContextConstructor() {
         val store = OAuthStore(getTargetContext())
-        store.saveOauthCredentials(DefaultOauthCredentials(accessToken, refreshToken, expiresIn))
+        store.saveCredentials(DefaultOAuthCredentials(accessToken, refreshToken, expiresIn))
         assertEquals(accessToken, store.accessToken)
         assertEquals(refreshToken, store.refreshToken)
     }
@@ -43,9 +43,9 @@ class OAuthStoreTest {
     @Test
     @Throws(Exception::class)
     fun testSaveOauthCredentialsSpConstructor() {
-        val sp = getTargetContext().getSharedPreferences(OAuthStore.SP_NAME, Context.MODE_PRIVATE)
+        val sp = getTargetContext().getSharedPreferences(OAuthStore.DEFAULT_SP_NAME, Context.MODE_PRIVATE)
         val store = OAuthStore(sp)
-        store.saveOauthCredentials(DefaultOauthCredentials(accessToken, refreshToken, expiresIn))
+        store.saveCredentials(DefaultOAuthCredentials(accessToken, refreshToken, expiresIn))
         assertEquals(accessToken, store.accessToken)
         assertEquals(refreshToken, store.refreshToken)
         val expiresAtApprox = System.currentTimeMillis() + expiresIn * 1000
@@ -56,8 +56,8 @@ class OAuthStoreTest {
     @Throws(Exception::class)
     fun testOnLogout() {
         val store = OAuthStore(getTargetContext())
-        store.saveOauthCredentials(DefaultOauthCredentials(accessToken, refreshToken, expiresIn))
-        store.onLogout()
+        store.saveCredentials(DefaultOAuthCredentials(accessToken, refreshToken, expiresIn))
+        store.clearCredentials()
         assertEquals(null, store.accessToken)
         assertEquals(null, store.refreshToken)
         assertEquals(null, store.expiresAt)
@@ -66,7 +66,7 @@ class OAuthStoreTest {
     @Test
     @Throws(Exception::class)
     fun testKeysMigration() {
-        val sp = getTargetContext().getSharedPreferences(OAuthStore.SP_NAME, Context.MODE_PRIVATE)
+        val sp = getTargetContext().getSharedPreferences(OAuthStore.DEFAULT_SP_NAME, Context.MODE_PRIVATE)
         sp.edit().putString(OAuthStore.ACCESS_TOKEN_KEY_OLD, accessToken).putString(OAuthStore.REFRESH_TOKEN_KEY_OLD, refreshToken).apply()
         val store = OAuthStore(getTargetContext())
         assertEquals(accessToken, store.accessToken)
@@ -76,6 +76,6 @@ class OAuthStoreTest {
     }
 
     private fun cleanStore() {
-        OAuthStore(getTargetContext()).onLogout()
+        OAuthStore(getTargetContext()).clearCredentials()
     }
 }

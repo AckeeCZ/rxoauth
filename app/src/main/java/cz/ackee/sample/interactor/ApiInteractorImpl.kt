@@ -1,8 +1,7 @@
 package cz.ackee.sample.interactor
 
-import cz.ackee.rxoauth.DefaultOauthCredentials
-import cz.ackee.rxoauth.OAuthStore
-import cz.ackee.rxoauth.OauthCredentials
+import cz.ackee.rxoauth.OAuthCredentials
+import cz.ackee.rxoauth.RxOAuthManager
 import cz.ackee.sample.model.SampleItem
 import cz.ackee.sample.model.rest.ApiDescription
 import cz.ackee.sample.model.rest.AuthApiDescription
@@ -12,21 +11,18 @@ import io.reactivex.Single
 /**
  * Implementation of api
  */
-class ApiInteractorImpl(private val oauthStore: OAuthStore,
+class ApiInteractorImpl(private val rxOAuthManager: RxOAuthManager,
                         private val apiDescription: ApiDescription,
                         private val authApiDescription: AuthApiDescription) : IApiInteractor {
 
-    override fun login(name: String, password: String): Single<DefaultOauthCredentials> {
+    override fun login(name: String, password: String): Single<OAuthCredentials> {
         return authApiDescription.login(name, password)
-                .doOnSuccess { this.oauthStore.saveOauthCredentials(it) }
+                .doOnSuccess { rxOAuthManager.saveCredentials(it) }
+                .map { it }
     }
 
     override fun getData(): Single<List<SampleItem>> {
         return apiDescription.getData()
-    }
-
-    override fun refreshAccessToken(refreshToken: String?): Single<OauthCredentials> {
-        return authApiDescription.refreshAccessToken(refreshToken).map { it }
     }
 
     override fun logout(): Completable {

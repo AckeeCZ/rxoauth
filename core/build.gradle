@@ -39,7 +39,7 @@ ext {
     publishedArtifactId = 'core'
 
     libraryName = 'RxOAuth'
-    libraryDescription = 'RxOauth2 Android Library'
+    libraryDescription = 'RxOAuth2 Android Library'
 }
 
 apply from: rootProject.file('gradle/bintray/install.gradle')

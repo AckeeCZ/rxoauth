@@ -6,10 +6,10 @@ import android.content.SharedPreferences
 /**
  * Persistence store of OAuth credentials.
  */
-class OAuthStore {
+internal class OAuthStore {
 
     companion object {
-        internal const val SP_NAME = "oauth2"
+        internal const val DEFAULT_SP_NAME = "oauth2"
         internal const val ACCESS_TOKEN_KEY_OLD = "oath2_access_token"
         internal const val REFRESH_TOKEN_KEY_OLD = "oath2_refresh_token"
         internal const val ACCESS_TOKEN_KEY = "oauth2_access_token"
@@ -28,8 +28,8 @@ class OAuthStore {
     val expiresAt: Long?
         get() = sp.getLong(EXPIRES_AT_KEY, -1).let { if (it > -1) it else null }
 
-    constructor(ctx: Context) {
-        sp = ctx.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
+    constructor(context: Context) {
+        sp = context.getSharedPreferences(DEFAULT_SP_NAME, Context.MODE_PRIVATE)
         ensureNewKeys()
     }
 
@@ -38,11 +38,7 @@ class OAuthStore {
         ensureNewKeys()
     }
 
-    fun onLogout() {
-        sp.edit().clear().apply()
-    }
-
-    fun saveOauthCredentials(credentials: OauthCredentials) {
+    fun saveCredentials(credentials: OAuthCredentials) {
         sp.edit()
                 .putString(ACCESS_TOKEN_KEY, credentials.accessToken)
                 .putString(REFRESH_TOKEN_KEY, credentials.refreshToken)
@@ -50,6 +46,10 @@ class OAuthStore {
                     credentials.expiresIn?.let { expiresIn -> putLong(EXPIRES_AT_KEY, System.currentTimeMillis() + expiresIn * 1000) }
                 }
                 .apply()
+    }
+
+    fun clearCredentials() {
+        sp.edit().clear().apply()
     }
 
     fun tokenExpired(): Boolean {

@@ -1,6 +1,6 @@
 package cz.ackee.sample.detail
 
-import cz.ackee.rxoauth.DefaultOauthCredentials
+import cz.ackee.rxoauth.DefaultOAuthCredentials
 import cz.ackee.sample.App
 import cz.ackee.sample.model.SampleItem
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,11 +43,11 @@ class DetailPresenter {
     }
 
     fun invalidateAccessToken() {
-        with(App.diContainer.oauthStore) { saveOauthCredentials(DefaultOauthCredentials("bla", refreshToken ?: "", 15)) }
+        with(App.diContainer.rxOAuthManager) { saveCredentials(DefaultOAuthCredentials("bla", refreshToken ?: "", 15)) }
     }
 
     fun invalidateRefreshToken() {
-        with(App.diContainer.oauthStore) { saveOauthCredentials(DefaultOauthCredentials(accessToken ?: "", "bla", 15)) }
+        with(App.diContainer.rxOAuthManager) { saveCredentials(DefaultOAuthCredentials(accessToken ?: "", "bla", 15)) }
     }
 
     fun logout() {

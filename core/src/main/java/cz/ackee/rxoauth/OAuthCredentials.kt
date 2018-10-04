@@ -1,9 +1,9 @@
 package cz.ackee.rxoauth
 
 /**
- * Model for credentials
+ * Model for OAuth credentials.
  */
-interface OauthCredentials {
+interface OAuthCredentials {
 
     val accessToken: String
     val refreshToken: String

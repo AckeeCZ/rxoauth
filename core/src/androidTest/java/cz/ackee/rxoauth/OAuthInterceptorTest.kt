@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
  * Test for auth okhttp3 interceptor
  */
 @RunWith(JUnit4::class)
-class AuthInterceptorTest {
+class OAuthInterceptorTest {
 
     private val store: OAuthStore = OAuthStore(getTargetContext())
 
@@ -47,16 +47,16 @@ class AuthInterceptorTest {
     @Test
     @Throws(IOException::class)
     fun testNonEmptyAuthToken() {
-        store.saveOauthCredentials(DefaultOauthCredentials("abc", "def"))
+        store.saveCredentials(DefaultOAuthCredentials("abc", "def"))
         assertTrue(interceptAuth(store, samplerequest, responseBuilder).request().header("Authorization")!!.contains("abc"))
     }
 
     private fun cleanStore() {
-        OAuthStore(getTargetContext()).onLogout()
+        OAuthStore(getTargetContext()).clearCredentials()
     }
 
     private fun interceptAuth(store: OAuthStore, request: Request, responseBuilder: Response.Builder): Response {
-        return AuthInterceptor(store).intercept(object : Interceptor.Chain {
+        return OAuthInterceptor(store).intercept(object : Interceptor.Chain {
             override fun request(): Request? {
                 return request
             }

@@ -10,13 +10,12 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import retrofit2.HttpException
 
 /**
- * Tests for [RxOauthManager] class
+ * Tests for [RxOAuthManager] class
  * = */
-class RxOauthManagerTest {
+class RxOAuthManagerTest {
 
     private var firstRun: Boolean = false
 
@@ -24,22 +23,13 @@ class RxOauthManagerTest {
     private val refreshToken = "def"
     private val expiresIn = 3600L
     private val successResult = "ok"
-    private val credentials = DefaultOauthCredentials(accessToken, refreshToken, expiresIn)
+    private val credentials = DefaultOAuthCredentials(accessToken, refreshToken, expiresIn)
 
-    private val eventListener = mock(RefreshTokenFailedListener::class.java)
     private val unauthorizedException = HttpException(retrofit2.Response.error<Any>(401, mock(ResponseBody::class.java)))
     private val badRequestException = HttpException(retrofit2.Response.error<Any>(400, mock(ResponseBody::class.java)))
 
-    private val authServiceSuccess = object : RefreshTokenService {
-        override fun refreshAccessToken(refreshToken: String?): Single<OauthCredentials> {
-            return Single.just(credentials)
-        }
-    }
-    private val authServiceError = object : RefreshTokenService {
-        override fun refreshAccessToken(refreshToken: String?): Single<OauthCredentials> {
-            return Single.error(badRequestException)
-        }
-    }
+    private val refreshSuccess: (String) -> Single<OAuthCredentials> = { Single.just(credentials) }
+    private val refreshError: (String) -> Single<OAuthCredentials> = { Single.error(badRequestException) }
 
     @Before
     fun setup() {
@@ -54,31 +44,31 @@ class RxOauthManagerTest {
 
     @Test
     fun testSuccessFullRequest() {
-        val oauthManager = RxOauthManager(getTargetContext(), authServiceSuccess, eventListener)
+        val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
         val result = Observable.just(successResult).compose(oauthManager.wrapWithOAuthHandlingObservable()).blockingFirst()
         assertEquals(successResult, result)
     }
 
     @Test
     fun testExpiredAccessTokenLocal() {
-        OAuthStore(getTargetContext()).saveOauthCredentials(credentials.copy(expiresIn = 0))
-        val oauthManager = RxOauthManager(getTargetContext(), authServiceSuccess, eventListener)
+        OAuthStore(getTargetContext()).saveCredentials(credentials.copy(expiresIn = 0))
+        val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
         val result = Observable.just(successResult).compose(oauthManager.wrapWithOAuthHandlingObservable()).blockingFirst()
         assertEquals(successResult, result)
     }
 
     @Test
     fun testExpiredAccessTokenSingleLocal() {
-        OAuthStore(getTargetContext()).saveOauthCredentials(credentials.copy(expiresIn = 0))
-        val oauthManager = RxOauthManager(getTargetContext(), authServiceSuccess, eventListener)
+        OAuthStore(getTargetContext()).saveCredentials(credentials.copy(expiresIn = 0))
+        val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
         val result = Single.just(successResult).compose(oauthManager.wrapWithOAuthHandlingSingle()).blockingGet()
         assertEquals(successResult, result)
     }
 
     @Test
     fun testExpiredAccessTokenCompletableLocal() {
-        OAuthStore(getTargetContext()).saveOauthCredentials(credentials.copy(expiresIn = 0))
-        val oauthManager = RxOauthManager(getTargetContext(), authServiceSuccess, eventListener)
+        OAuthStore(getTargetContext()).saveCredentials(credentials.copy(expiresIn = 0))
+        val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
         Completable.complete()
                 .compose(oauthManager.wrapWithOAuthHandlingCompletable())
                 .test()
@@ -88,7 +78,7 @@ class RxOauthManagerTest {
 
     @Test
     fun testExpiredAccessTokenServer() {
-        val oauthManager = RxOauthManager(getTargetContext(), authServiceSuccess, eventListener)
+        val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
         val badObservable = Observable.just(successResult)
                 .flatMap(Function<String, ObservableSource<*>> { result ->
                     if (firstRun) {
@@ -103,7 +93,7 @@ class RxOauthManagerTest {
 
     @Test
     fun testExpiredAccessTokenSingleServer() {
-        val oauthManager = RxOauthManager(getTargetContext(), authServiceSuccess, eventListener)
+        val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
         val badObservable = Single.just(successResult)
                 .flatMap(Function<String, SingleSource<*>> { result ->
                     if (firstRun) {
@@ -118,7 +108,7 @@ class RxOauthManagerTest {
 
     @Test
     fun testExpiredAccessTokenCompletableServer() {
-        val oauthManager = RxOauthManager(getTargetContext(), authServiceSuccess, eventListener)
+        val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
         Observable.just(successResult)
                 .flatMapCompletable(Function {
                     if (firstRun) {
@@ -135,7 +125,7 @@ class RxOauthManagerTest {
 
     @Test
     fun testExpiredRefreshToken() {
-        val oauthManager = RxOauthManager(getTargetContext(), authServiceError, eventListener)
+        val oauthManager = RxOAuthManager(getTargetContext(), refreshError)
         val badObservable = Observable.just(successResult)
                 .flatMap(Function<String, ObservableSource<*>> { s ->
                     if (firstRun) {
@@ -153,11 +143,9 @@ class RxOauthManagerTest {
             assertTrue(ex is HttpException)
             assertEquals((ex as HttpException).code().toLong(), 400)
         }
-
-        verify(eventListener).onRefreshTokenFailed(badRequestException)
     }
 
     private fun cleanStore() {
-        OAuthStore(getTargetContext()).onLogout()
+        OAuthStore(getTargetContext()).clearCredentials()
     }
 }

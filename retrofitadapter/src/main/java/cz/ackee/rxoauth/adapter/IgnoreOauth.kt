@@ -1,4 +1,5 @@
-package cz.ackee.rxoauth
+package cz.ackee.rxoauth.adapter
+import retrofit2.Retrofit
 
 /**
  * Annotation that marks [Retrofit] interface method with info that auth check will not be

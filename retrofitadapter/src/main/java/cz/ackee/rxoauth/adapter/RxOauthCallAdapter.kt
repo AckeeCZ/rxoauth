@@ -15,7 +15,7 @@
  */
 package cz.ackee.rxoauth.adapter
 
-import cz.ackee.rxoauth.*
+import cz.ackee.rxoauth.RxOAuthManager
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.plugins.RxJavaPlugins
@@ -30,13 +30,7 @@ internal class RxOauthCallAdapter<R>(private val responseType: Type,
                                      private val isMaybe: Boolean,
                                      private val isCompletable: Boolean,
                                      private val ignoreAuth: Boolean,
-                                     private val oAuthStore: OAuthStore,
-                                     private val authService: RefreshTokenService,
-                                     private val eventListener: RefreshTokenFailedListener,
-                                     private val errorChecker: ErrorChecker
-) : CallAdapter<R, Any> {
-
-    private val rxOauthManager = RxOauthManager(oAuthStore, authService, eventListener, errorChecker)
+                                     private val rxOAuthManager: RxOAuthManager) : CallAdapter<R, Any> {
 
     override fun responseType(): Type {
         return responseType
@@ -53,7 +47,7 @@ internal class RxOauthCallAdapter<R>(private val responseType: Type,
         }
 
         if (!ignoreAuth) {
-            observable = observable.compose(rxOauthManager.wrapWithOAuthHandlingObservable())
+            observable = observable.compose(rxOAuthManager.wrapWithOAuthHandlingObservable())
         }
 
         if (isFlowable) {

@@ -15,7 +15,7 @@
  */
 package cz.ackee.rxoauth.adapter
 
-import cz.ackee.rxoauth.*
+import cz.ackee.rxoauth.RxOAuthManager
 import io.reactivex.*
 import retrofit2.CallAdapter
 import retrofit2.HttpException
@@ -31,13 +31,8 @@ import java.lang.reflect.Type
  * It wraps every call (except the ones with [IgnoreAuth] annotation) with check for expired access
  * token and if that happens, it will perform request for refreshing access token. It guarantees
  * that if simultaneous requests happen only one refresh token request is performed and original
- * requests are retried. The refresh of token is performed via [authService] parameter.
+ * requests are retried.
  *
- * When refresh of token fails it will notify [oauthEventListener] and app should handle that
- * (eg. logout user)
- *
- * Its possible to supply [errorChecker] that accepts [HttpException] and decides if this error represents
- * expired access token or expired refresh token.
  *
  * This is a copy of Retrofit documentation:
  * A [call adapter][CallAdapter.Factory] which uses RxJava 2 for creating observables.
@@ -64,18 +59,7 @@ import java.lang.reflect.Type
  * [Result] object for all HTTP responses and errors.
  *
  */
-class RxOauthCallAdapterFactory(private val oAuthStore: OAuthStore,
-                                private val authService: RefreshTokenService,
-                                private val oauthEventListener: RefreshTokenFailedListener,
-                                private val errorChecker: ErrorChecker
-) : CallAdapter.Factory() {
-
-    companion object {
-
-        fun create(oAuthStore: OAuthStore, authService: RefreshTokenService, logoutEvent: RefreshTokenFailedListener, errorChecker: ErrorChecker = DefaultErrorChecker()): RxOauthCallAdapterFactory {
-            return RxOauthCallAdapterFactory(oAuthStore, authService, logoutEvent, errorChecker)
-        }
-    }
+class RxOauthCallAdapterFactory(private val rxOAuthManager: RxOAuthManager) : CallAdapter.Factory() {
 
     override fun get(returnType: Type, annotations: Array<Annotation>, retrofit: Retrofit): CallAdapter<*, *>? {
         val rawType = CallAdapter.Factory.getRawType(returnType)
@@ -90,10 +74,7 @@ class RxOauthCallAdapterFactory(private val oAuthStore: OAuthStore,
                     isSingle = false,
                     isMaybe = false,
                     ignoreAuth = ignoreAuth,
-                    authService = authService,
-                    oAuthStore = oAuthStore,
-                    eventListener = oauthEventListener,
-                    errorChecker = errorChecker
+                    rxOAuthManager = rxOAuthManager
             )
         }
 
@@ -135,10 +116,7 @@ class RxOauthCallAdapterFactory(private val oAuthStore: OAuthStore,
                 isMaybe = isMaybe,
                 isCompletable = false,
                 ignoreAuth = ignoreAuth,
-                authService = authService,
-                oAuthStore = oAuthStore,
-                eventListener = oauthEventListener,
-                errorChecker = errorChecker
+                rxOAuthManager = rxOAuthManager
         )
     }
 }

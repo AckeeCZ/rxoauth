@@ -5,9 +5,9 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 /**
- * Interceptor that adds `Authorization: Bearer {access_token}` to all requests, if access_token is set.
+ * Interceptor that adds Authorisation header with access token from [OAuthStore] to Http requests.
  */
-class AuthInterceptor(internal var oAuthStore: OAuthStore) : Interceptor {
+class OAuthInterceptor internal constructor(private val oAuthStore: OAuthStore) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()

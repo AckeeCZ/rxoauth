@@ -1,10 +1,10 @@
 package cz.ackee.rxoauth
 
 /**
- * Default [OauthCredentials] implementation.
+ * Default [OAuthCredentials] implementation.
  */
-data class DefaultOauthCredentials(
+data class DefaultOAuthCredentials(
         override val accessToken: String,
         override val refreshToken: String,
         override val expiresIn: Long? = null
-) : OauthCredentials
+) : OAuthCredentials

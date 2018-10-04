@@ -8,7 +8,7 @@ import java.net.HttpURLConnection
  */
 class DefaultErrorChecker : ErrorChecker {
 
-    override fun isExpiredAccessToken(t: Throwable): Boolean {
+    override fun invalidAccessToken(t: Throwable): Boolean {
         if (t is HttpException) {
             if (t.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 return true
@@ -17,7 +17,7 @@ class DefaultErrorChecker : ErrorChecker {
         return false
     }
 
-    override fun isBadRefreshToken(t: Throwable): Boolean {
+    override fun invalidRefreshToken(t: Throwable): Boolean {
         if (t is HttpException) {
             if (t.code() == HttpURLConnection.HTTP_BAD_REQUEST || t.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 return true
