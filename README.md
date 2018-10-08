@@ -1,80 +1,112 @@
-[ ![Download](https://api.bintray.com/packages/ackeecz/rxoauth2/rxoauth/images/download.svg) ](https://bintray.com/ackeecz/rxoauth2/rxoauth/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/ackeecz/rxOAuth2/rxOAuth/images/download.svg) ](https://bintray.com/ackeecz/rxOAuth2/rxOAuth/_latestVersion)
 
-# RxOauth2 Android Library
+# RxOAuth2 Android Library
+Simple reactive extension, that adds support to Retrofit2 based projects which uses OAuth2 authentication.
 
-Simple reactive extension, that adds support to Retrofit2 based projects which uses OAuth2 authentication. 
-
-This library is based on RxJava2
-
+This library is based on RxJava2.
+## Core
 ### Description
-Library will handle posting only one refresh token request in cases where multiple simultaneous requests are fired to server and 401 is returned to all of them.
-
-When refreshing token fails, client is notified via Event listener that is passed in constructor. 
+- `RxOAuthManager` provides wrapping for RxJava2 streams, which automatically handles access token expiration and performs token refresh. In case of success, new credentials are stored in `SharedPreferences`. When refresh token is invalid, the optional logic provided in `onRefreshTokenFailed` is performed. With custom `ErrorChecker`, the user may customize access and refresh tokens errors validation
+- `OAuthInterceptor`, which is provided by `RxOAuthManager` adds `Authorization` header with access token to OkHttp requests
+- `DefaultOAuthCredentials` is the default implementation of `OAuthCredentials`
 
 ### Dependencies
 ```groovy
-compile 'cz.ackee.rxoauth2:rxoauth:x.x.x'
-
+compile 'cz.ackee.rxoauth2:core:x.x.x'
 ```
 
 ### Usage
-Working sample is provided in `app` module
+Working sample is provided in `app` module.
+
 #### Initialization
-This should be present in some interactor with Api (in our cases, ApiInteractorImpl constructor)
-```java
-this.rxOauth = new RxOauthManaging(ctx, //context for creating shared preferneces with oauth info
-                    this, // service that will call refresh token request
-                    () -> { // listener for logout
-        // lead user to logout screen somehow
-        // (this is a bad example, it does not handle all edge cases
-        App.getInstance().startActivity(new Intent(App.getInstance(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-});
+Create `RxOAuthManager` typically in API access layer (in our case, ApiInteractorImpl):
+```kotlin
+class ApiInteractorImpl @Inject constructor(private val apiDescription: ApiDescription,
+                                            context: Context) : ApiInteractor {
+
+    private val rxOAuthManager: RxOAuthManager = RxOAuthManager(
+            context = context,
+            refreshTokenAction = { refreshToken ->
+                apiDescription.refreshToken(refreshToken) // API call for token refresh
+            },
+            onRefreshTokenFailed = { err ->
+                // Fallback, e.g. log out
+            })
+}
 ```
 #### Storing credentials
-You can save oauth credentials via method `saveOauthCredentials(String accessToken, String refreshToken)` or via `saveOauthCredentials(ICredentialsModel credentials)` method. ICredentials method requires only two methods - `getAccessToken()` and `getRefreshToken()`
-```java
-    this.apiDescription.login(name, password)
-        .doOnNext(response -> this.rxOauth.saveCredentials(response));
+You can save OAuth credentials with `saveCredentials(credentials: OAuthCredentials)` method. You may want to do this after receiving credentials from server, e.g. after login or sign in.
+```kotlin
+    apiDescription.login(name, password)
+        .doOnNext { credentials -> rxOAuthManager.saveCredentials(credentials) }
 ```
 ### Logout
-When you want to clear data, just call `logout()` method on rxOauth
-```java
-this.apiDescription.logout()
-    .doOnNext(response -> this.rxOauth.logout())
+After logging out, you may want to remove credentials from the store.
+```kotlin
+apiDescription.logout()
+    .doOnNext { response -> rxOAuthManager.clearCredentials() }
 ```
 
 ### Check for access/refresh token expiration
-On requests you want to check for tokens expiration you have to call our transformer of Rx observers
-```java
-    this.apiDescription.getData()
-        .compose(this.rxOauth.wrapWithOauthHandling());
+To wrap your requests with OAuth handling, just call `wrapWithOAuthHandlingObservable()`, `wrapWithOAuthHandlingSingle()` or `wrapWithOAuthHandlingCompletable()` on the stream you want. `RxOAuthManager` supports `Observable`, `Single` and `Completable`.
+```kotlin
+    apiDescription.getData()
+        .compose(rxOAuthManager.wrapWithOAuthHandlingSingle())
 ```
 
 ### RxWrapper
-For purposes of this library was developed small annotation processor called RxWrapper, that will generate class which adds `compose(this.rxOauth.wrapWithOauthHandling());` to every request
-Initializaiton in constructor of Api Interactor:
-```java
-public ApiInteractorImpl(OAuthStore oAuthStore, ApiDescription apiDescription) {
-        this.apiDescription = apiDescription;
-        this.rxOauthManaging = new RxOauthManager(oAuthStore, this, new IOauthEventListener() {
-            @Override
-            public void onRefreshTokenFailed() {
-               //logout
-            }
-        });
+To avoid boilerplate for each request, you may use another library we developed - [RxWrapper](https://github.com/AckeeCZ/rxwrapper), which wraps the whole interface functions that use RxJava2 with custom `Transformer`s using `compose` operator. Now you need to apply `wrapWithOAuthHandling...()` only once and work with generated wrapper insteado of original `apiDescription`. If you want to exclude some function from wrapping, just mark it with `@NoCompose` annotation.
+Initialization in constructor of Api Interactor:
+```kotlin
+private var apiWrapper = ApiDescriptionWrapped(apiDescription, object : IComposeWrapper {
+        override fun <T : Any?> wrapSingle(): SingleTransformer<T, T> {
+            return rxOAuthManager.wrapWithOAuthHandlingSingle()
+        }
 
-        apiWrapper = new ApiDescriptionWrapped(apiDescription, new IComposeWrapper() {
-            @Override
-            public <T> ObservableTransformer<T, T> wrap() {
-                return rxOauthManaging.wrapWithOAuthHandling();
-            }
-        });
-    }
+        override fun wrapCompletable(): CompletableTransformer {
+            return rxOAuthManager.wrapWithOAuthHandlingCompletable()
+        }
+
+        override fun <T : Any?> wrapObservable(): ObservableTransformer<T, T> {
+            return rxOAuthManager.wrapWithOAuthHandlingObservable()
+        }
+    })
 ```
 
+## Retrofit2 adapter
+### Description
+From version 2.0.0, new module is available. Now RxOAuth2 wrapping may be provided as Retrofit2 `CallAdapter`.
+
+### Dependencies
+```groovy
+compile 'cz.ackee.rxoauth2:retrofit-adapter:x.x.x'
+```
+
+### Usage
+When creating your API service, just provide `RxOAuthCallAdapterFactory` to Retrofit builder. If you want to exclude some function from wrapping, just mark it with `@IgnoreAuth` annotation.
+```kotlin
+    val apiDescription: ApiDescription = retrofitBuilder
+            .client(OkHttpClient.Builder()
+                    .addNetworkInterceptor(rxOAuthManager.provideAuthInterceptor())
+                    .build())
+            .addCallAdapterFactory(RxOAuthCallAdapterFactory(rxOAuthManager))
+            .build()
+            .create(ApiDescription::class.java)
+```
 
 ## CHANGELOG
 ### 1.0.0
 - Release of lib with RxJava2 support
 ### 1.0.3
 - Abstract checker for errors to give user ability to change behavior when to refresh token
+### 2.0.0
+- Artifact naming change: `cz.ackee.rxoauth2:rxOAuth` -> `cz.ackee.rxoauth2:core`
+- New module `Retrofit adapter` is created with artifact `cz.ackee.rxoauth2:retrofit-adapter`, more on this in section [Retrofit2 adapter](#retrofit2-adapter)
+- `RxOAuthManager` now accepts `Context` or custom `SharedPreferences` in the constructor instead of `OAuthStore`
+- `RxOAuthManager` now uses lambda action `refreshTokenAction: (String) -> Single<OAuthCredentials>` instead of `RefreshTokenService` class
+- `RxOAuthManager` now uses lambda action `onRefreshTokenFailed: (Throwable) -> Unit` instead of `RefreshTokenFailedListener` class.
+- New property `expiresIn` is added to `OAuthCredentials`. Now `OAuthStore` stores token expiration time and `RxOAuthManager` controls it locally before each request to avoid redundant API calls if access token is expired
+- `OAuthStore` is now an internal class. The only way to store credentials is `saveCredentials(credentials: OAuthCredentials)` on `RxOAuthManager`. The same is with `clearCredentials()`
+- `AuthInterceptor` is renamed to `OAuthInterceptor` an has now only internal constructor. The only way to get an instance is `provideAuthInterceptor()` function on `RxOAuthManager`
+- `DefaultOAuthCredentials` class is added as default implementation of `OAuthCredentials`
+- `DefaultErrorChecker` functions were renamed
