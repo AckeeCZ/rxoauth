@@ -9,6 +9,8 @@ android {
         targetSdkVersion 28
         versionCode = libProperties['VERSION_CODE']
         versionName libProperties['VERSION_NAME']
+        // needed for different module name and artifact id name
+        archivesBaseName = "retrofit-adapter"
     }
 
     buildTypes {

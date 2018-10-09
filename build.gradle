@@ -43,3 +43,8 @@ ext {
     espressoVersion = '3.1.0-alpha3'
     dexmakerVersion = '1.2'
 }
+
+//plugin doesn't understand well with kotlin documentation so disable javadoc generation
+subprojects {
+    tasks.withType(Javadoc).all { enabled = false }
+}
