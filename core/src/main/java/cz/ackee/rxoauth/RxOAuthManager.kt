@@ -45,7 +45,7 @@ class RxOAuthManager internal constructor(private val oAuthStore: OAuthStore,
                 .doOnComplete { initRefreshTokenObservable() }
     }
 
-    internal fun <T> transformObservable(): ObservableTransformer<T, T> {
+    fun <T> transformObservable(): ObservableTransformer<T, T> {
         return ObservableTransformer { upstream ->
             if (oAuthStore.tokenExpired()) {
                 refreshTokenObservable!!.flatMap { upstream }
@@ -59,7 +59,7 @@ class RxOAuthManager internal constructor(private val oAuthStore: OAuthStore,
         }
     }
 
-    internal fun <T> transformSingle(): SingleTransformer<T, T> {
+    fun <T> transformSingle(): SingleTransformer<T, T> {
         return SingleTransformer { upstream ->
             if (oAuthStore.tokenExpired()) {
                 refreshTokenObservable!!.flatMapSingle { upstream }.firstOrError()
@@ -73,7 +73,7 @@ class RxOAuthManager internal constructor(private val oAuthStore: OAuthStore,
         }
     }
 
-    internal fun transformCompletable(): CompletableTransformer {
+    fun transformCompletable(): CompletableTransformer {
         return CompletableTransformer { upstream ->
             if (oAuthStore.tokenExpired()) {
                 refreshTokenObservable!!.flatMapCompletable { upstream }
