@@ -16,6 +16,7 @@
 package cz.ackee.rxoauth.adapter
 
 import cz.ackee.rxoauth.RxOAuthManager
+import cz.ackee.rxoauth.wrapWithOAuthHandlingObservable
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.plugins.RxJavaPlugins
@@ -47,7 +48,7 @@ internal class RxOauthCallAdapter<R>(private val responseType: Type,
         }
 
         if (!ignoreAuth) {
-            observable = observable.compose(rxOAuthManager.wrapWithOAuthHandlingObservable())
+            observable = observable.wrapWithOAuthHandlingObservable(rxOAuthManager)
         }
 
         if (isFlowable) {
