@@ -1,12 +1,12 @@
 language: android
-
 env:
   global:
   - ANDROID_EMU_API_LEVEL=22
   - ANDROID_ABI=armeabi-v7a
-  - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
-  - QEMU_AUDIO_DRV=none # Remove audio
-
+  - ADB_INSTALL_TIMEOUT=20
+  - QEMU_AUDIO_DRV=none
+  - secure: gQO4UBVLLgIxEO8FB3dAyZTLSSdxNtdQks2jOQDHh1ugMO0vsSkNb5PH1zKp1In2jz0EnD9DqHco/2B5xO3UUnCOj9ZS7Xx6SBEx+Gza3SSMUdOAAp5lzUgrBSk9XyiCnYJ9ZqmbiZk+Pd74POiFgi1bYE86f4q/qIeyuOKo6/XmWN7qgjKkbVJM3fMXQuCxVDLOg7N1XllruAbm4iK6v+TdzQwxyltPYdhLk5p7YGlkTcSmlGI+fLwDFVq/ejZ6ezPYSn0+7yWWG5JxNQFj8Zp4ddQallnHvjbSzqnjQiOutKakOtOytuwBO+PnKylFcVgbvngkTBwVZvdiv80qzSheG3JBeXQdTbufMbRqfG2Sf7oRMsmZLIxfoFP88a+N6R14H30jXG7zRGDxLsLXz2WJDq2ancWCNCs0BDTUbvqFXHcI0UB9HK87imWpVJJp6s3HJLSYMKvtnwoAbZwhTe1XI4zz0GCms2tEZ+h0o+kLsg00YZreFYrqLTXJ1o17oqcAYkChdH2uAumh86nr5q5DvAhGm0Y8Qj00S6w0lkDelx7ZsEP1PsBgeHBtSYRhB9k3IISyMQFmxTip4SYPRmKTYrGmNfJ3aGtJ/SshcGHe6u56ll5X/GKjSj8xNXaAvKZtRz+sFDVFk0Zw+DGrj0+o3jUI5r/HQQhZAcfnvJA=
+  - secure: WCFAmVjv2hpcClyvTJsi4lvuTVORSUwcDhXcWz8Z8iETU+ynl2aWuFGslptRVOELqJY75w9bohqBltKoxVthhMzK262Kw+0GkzCB0wgv5B8h7hLPuaef43I0VKkuGGsQhYdeKI80RZER4i8SdxpTHrsBkQSxg4dqPvpup1aOECWDWr4GcRkGdDhNSaY61TQZD0qN0/CrhRGia/Nb4Fcz9a7nlfIm49W3qWB5vyW9dw0THLCPB0cHTUt0twvO3uOSKC+bFr1oil3JbOd19Qf709EDiRwcxRTlqsL35x6ol1DJ12hXZERwfJD9g7Db1WZhmqNOmjSAU3YYMGJq2538n7Q6W413cofYpSmtXZswkXa7ULdck/UAPftRpxlM0q4o4AZ1iM8eHS1CrodZadgLAq5JHGyG9TtYcjtzs0drSx465c4VTJD9pCsRn9X36P9c9eJnfSf6FjoF6+aP1hCdni45XaV5yfCdK2DeVjebfkAbPN3SIdhazYrCB+NMhkJ8G7LSPDoQoaa0HiAchD2C30dIUxRQ/feHpSnbhbH0fmNS+B8kg3ikZPGS7EMWhWGxF2fs6XLNQ67FP8rYLHe0rFAWgaEqXoQWJ/QTjsYtIr/P2BLfCB3kryYluqQXGFAUtsybgwiAKXK+Z8LaEE7L3JRkhsppfvvOUretOOSe89Q=
 android:
   components:
   - tools
@@ -16,36 +16,28 @@ android:
   - android-$ANDROID_EMU_API_LEVEL
   - sys-img-$ANDROID_ABI-google_apis-$ANDROID_EMU_API_LEVEL
   - addon-google_apis-google-28
-
-
 licenses:
-  - 'android-sdk-preview-license-52d11cd2'
-  - 'android-sdk-license-.+'
-  - 'google-gdk-license-.+'
-
+- android-sdk-preview-license-52d11cd2
+- android-sdk-license-.+
+- google-gdk-license-.+
 jdk:
 - oraclejdk8
-
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
-
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
 notifications:
   email: false
-
 before_script:
-  # Create and start emulator
-  - echo no | android create avd --force -n test -t android-$ANDROID_EMU_API_LEVEL --abi google_apis/$ANDROID_ABI
-  - emulator -avd test -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
-  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
-  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
-
-script: ./gradlew connectedAndroidTest
+- echo no | android create avd --force -n test -t android-$ANDROID_EMU_API_LEVEL --abi
+  google_apis/$ANDROID_ABI
+- emulator -avd test -no-window &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
+- echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
+- echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
+script: "./gradlew connectedAndroidTest"
