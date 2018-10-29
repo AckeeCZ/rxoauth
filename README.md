@@ -49,8 +49,7 @@ apiDescription.logout()
 ### Check for access/refresh token expiration
 To wrap your requests with OAuth handling, just call `wrapWithOAuthHandlingObservable()`, `wrapWithOAuthHandlingSingle()` or `wrapWithOAuthHandlingCompletable()` on the stream you want. `RxOAuthManager` supports `Observable`, `Single` and `Completable`.
 ```kotlin
-    apiDescription.getData()
-        .compose(rxOAuthManager.wrapWithOAuthHandlingSingle())
+    apiDescription.getData().wrapWithOAuthHandlingSingle(rxOAuthManager)
 ```
 
 ### RxWrapper
@@ -59,15 +58,15 @@ Initialization in constructor of Api Interactor:
 ```kotlin
 private var apiWrapper = ApiDescriptionWrapped(apiDescription, object : IComposeWrapper {
         override fun <T : Any?> wrapSingle(): SingleTransformer<T, T> {
-            return rxOAuthManager.wrapWithOAuthHandlingSingle()
+            return rxOAuthManager.transformSingle()
         }
 
         override fun wrapCompletable(): CompletableTransformer {
-            return rxOAuthManager.wrapWithOAuthHandlingCompletable()
+            return rxOAuthManager.transformCompletable()
         }
 
         override fun <T : Any?> wrapObservable(): ObservableTransformer<T, T> {
-            return rxOAuthManager.wrapWithOAuthHandlingObservable()
+            return rxOAuthManager.transformObservable()
         }
     })
 ```
@@ -109,3 +108,6 @@ When creating your API service, just provide `RxOAuthCallAdapterFactory` to Retr
 - `AuthInterceptor` is renamed to `OAuthInterceptor` an has now only internal constructor. The only way to get an instance is `provideAuthInterceptor()` function on `RxOAuthManager`
 - `DefaultOAuthCredentials` class is added as default implementation of `OAuthCredentials`
 - `DefaultErrorChecker` functions were renamed
+### 2.1.0
+- Rename `wrapWithOAuthHandlingObservable()`, `wrapWithOAuthHandlingSingle()` and `wrapWithOAuthHandlingCompletable()` functions, returning transformers to `transformObservable()`, `transformSingle()` and `transformCompletable()` respectively
+- Add Kotlin extensions for RxJava entities: `wrapWithOAuthHandlingObservable()`, `wrapWithOAuthHandlingSingle()` and `wrapWithOAuthHandlingCompletable()`

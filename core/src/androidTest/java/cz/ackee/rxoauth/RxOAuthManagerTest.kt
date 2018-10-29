@@ -45,7 +45,7 @@ class RxOAuthManagerTest {
     @Test
     fun testSuccessFullRequest() {
         val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
-        val result = Observable.just(successResult).compose(oauthManager.wrapWithOAuthHandlingObservable()).blockingFirst()
+        val result = Observable.just(successResult).wrapWithOAuthHandlingObservable(oauthManager).blockingFirst()
         assertEquals(successResult, result)
     }
 
@@ -53,7 +53,7 @@ class RxOAuthManagerTest {
     fun testExpiredAccessTokenLocal() {
         OAuthStore(getTargetContext()).saveCredentials(credentials.copy(expiresIn = 0))
         val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
-        val result = Observable.just(successResult).compose(oauthManager.wrapWithOAuthHandlingObservable()).blockingFirst()
+        val result = Observable.just(successResult).wrapWithOAuthHandlingObservable(oauthManager).blockingFirst()
         assertEquals(successResult, result)
     }
 
@@ -61,7 +61,7 @@ class RxOAuthManagerTest {
     fun testExpiredAccessTokenSingleLocal() {
         OAuthStore(getTargetContext()).saveCredentials(credentials.copy(expiresIn = 0))
         val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
-        val result = Single.just(successResult).compose(oauthManager.wrapWithOAuthHandlingSingle()).blockingGet()
+        val result = Single.just(successResult).wrapWithOAuthHandlingSingle(oauthManager).blockingGet()
         assertEquals(successResult, result)
     }
 
@@ -70,7 +70,7 @@ class RxOAuthManagerTest {
         OAuthStore(getTargetContext()).saveCredentials(credentials.copy(expiresIn = 0))
         val oauthManager = RxOAuthManager(getTargetContext(), refreshSuccess)
         Completable.complete()
-                .compose(oauthManager.wrapWithOAuthHandlingCompletable())
+                .wrapWithOAuthHandlingCompletable(oauthManager)
                 .test()
                 .assertNoErrors()
                 .assertComplete()
@@ -87,7 +87,7 @@ class RxOAuthManagerTest {
                     }
                     Observable.just(result)
                 })
-                .compose(oauthManager.wrapWithOAuthHandlingObservable())
+                .wrapWithOAuthHandlingObservable(oauthManager)
         assertEquals(successResult, badObservable.blockingFirst())
     }
 
@@ -102,7 +102,7 @@ class RxOAuthManagerTest {
                     }
                     Single.just(result)
                 })
-                .compose(oauthManager.wrapWithOAuthHandlingSingle())
+                .wrapWithOAuthHandlingSingle(oauthManager)
         assertEquals(successResult, badObservable.blockingGet())
     }
 
@@ -117,7 +117,7 @@ class RxOAuthManagerTest {
                     }
                     Completable.complete()
                 })
-                .compose(oauthManager.wrapWithOAuthHandlingCompletable())
+                .wrapWithOAuthHandlingCompletable(oauthManager)
                 .test()
                 .assertNoErrors()
                 .assertComplete()
@@ -134,7 +134,7 @@ class RxOAuthManagerTest {
                     }
                     Observable.just(s)
                 })
-                .compose(oauthManager.wrapWithOAuthHandlingObservable())
+                .wrapWithOAuthHandlingObservable(oauthManager)
         try {
             badObservable.blockingFirst()
             assertTrue("Couldnt be here, should failed", false)
