@@ -42,7 +42,8 @@ script: "./gradlew assembleRelease"
 
 deploy:
   provider: script
-  script: "./gradlew core:clean && ./gradlew core:build && ./gradlew core:install && ./gradlew core:bintrayUpload"
+  script: "echo $BINTRAY_USER && ./gradlew core:clean && ./gradlew core:build && ./gradlew core:install && ./gradlew core:bintrayUpload"
   skip_cleanup: true
+  dry_run: true
   on:
     tags: true
