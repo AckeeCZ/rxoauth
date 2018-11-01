@@ -1,48 +1,37 @@
 language: android
-
 jdk:
 - oraclejdk8
-
 env:
   global:
-  - secure: gQO4UBVLLgIxEO8FB3dAyZTLSSdxNtdQks2jOQDHh1ugMO0vsSkNb5PH1zKp1In2jz0EnD9DqHco/2B5xO3UUnCOj9ZS7Xx6SBEx+Gza3SSMUdOAAp5lzUgrBSk9XyiCnYJ9ZqmbiZk+Pd74POiFgi1bYE86f4q/qIeyuOKo6/XmWN7qgjKkbVJM3fMXQuCxVDLOg7N1XllruAbm4iK6v+TdzQwxyltPYdhLk5p7YGlkTcSmlGI+fLwDFVq/ejZ6ezPYSn0+7yWWG5JxNQFj8Zp4ddQallnHvjbSzqnjQiOutKakOtOytuwBO+PnKylFcVgbvngkTBwVZvdiv80qzSheG3JBeXQdTbufMbRqfG2Sf7oRMsmZLIxfoFP88a+N6R14H30jXG7zRGDxLsLXz2WJDq2ancWCNCs0BDTUbvqFXHcI0UB9HK87imWpVJJp6s3HJLSYMKvtnwoAbZwhTe1XI4zz0GCms2tEZ+h0o+kLsg00YZreFYrqLTXJ1o17oqcAYkChdH2uAumh86nr5q5DvAhGm0Y8Qj00S6w0lkDelx7ZsEP1PsBgeHBtSYRhB9k3IISyMQFmxTip4SYPRmKTYrGmNfJ3aGtJ/SshcGHe6u56ll5X/GKjSj8xNXaAvKZtRz+sFDVFk0Zw+DGrj0+o3jUI5r/HQQhZAcfnvJA=
-  - secure: WCFAmVjv2hpcClyvTJsi4lvuTVORSUwcDhXcWz8Z8iETU+ynl2aWuFGslptRVOELqJY75w9bohqBltKoxVthhMzK262Kw+0GkzCB0wgv5B8h7hLPuaef43I0VKkuGGsQhYdeKI80RZER4i8SdxpTHrsBkQSxg4dqPvpup1aOECWDWr4GcRkGdDhNSaY61TQZD0qN0/CrhRGia/Nb4Fcz9a7nlfIm49W3qWB5vyW9dw0THLCPB0cHTUt0twvO3uOSKC+bFr1oil3JbOd19Qf709EDiRwcxRTlqsL35x6ol1DJ12hXZERwfJD9g7Db1WZhmqNOmjSAU3YYMGJq2538n7Q6W413cofYpSmtXZswkXa7ULdck/UAPftRpxlM0q4o4AZ1iM8eHS1CrodZadgLAq5JHGyG9TtYcjtzs0drSx465c4VTJD9pCsRn9X36P9c9eJnfSf6FjoF6+aP1hCdni45XaV5yfCdK2DeVjebfkAbPN3SIdhazYrCB+NMhkJ8G7LSPDoQoaa0HiAchD2C30dIUxRQ/feHpSnbhbH0fmNS+B8kg3ikZPGS7EMWhWGxF2fs6XLNQ67FP8rYLHe0rFAWgaEqXoQWJ/QTjsYtIr/P2BLfCB3kryYluqQXGFAUtsybgwiAKXK+Z8LaEE7L3JRkhsppfvvOUretOOSe89Q=
-
+  - secure: H/KTyfddpCfKZgG52Qbd45yTR8AJ5lU9sO7MOHz/eJaXfWFoEy+UrHY7yzmcsNw5GafQ4tagLyPzL2ynESH1synxaTMR3n+LsqQqgHFN31pbhjIvpqv+BaS8cGcyNf3G0UCiZsfQAxFCsEE+QI/STW4bEj/9oEZ3c93/5tQPOJtTs0C6qXDfaZk7PlaZ2UatC96a2CX+HGE59ovbCjTFX6pi7BNbjQyWRLrj2kzB+qY17ayQx/1LAUxDbtsQrrx0qkaTyDPVlw2fCg47JTm5vWEGu4cY0ZqH8EVXOidCeb8L76q6mGDI+C6QIk9yfXWulio1uoC3794e41hZZTQn9Wj3dVdd76R6F6TsMhwMlBUd2KP0v0cDLQk3pKIeGucV+AcecciWM+gBGAU5ZLJUKugYgy3Zehz+qVM19OTQQYsxK5kWlvREwYYiF/XHf7wzJg67iS3NDXSjL+GTekIGDn95Cm2IYILksQE1RDw6k5eNkTHZWdp+AR632pH59euZhZoCOnky9YFH88ZAqMHTxYdvCaDAsSYegb1Vwb4rh8fIddZyDhPFcu8CVQlk/RutqsOTr38kbo2gf33QbNMzxoF2enaFjR42JDe6RxJ42CMFs9X9EouMZ/IKjnAWxBxNTCFCzZDHEg4z7LE8gUxxxUnYLU6boYWUnJO7UbGod+k=
+  - secure: eMHTAHGyGAN8HZgKbQ6cGtv4hmkq1GRUIU4tBxNwayrvq2OCm3JBKrkIh50ZMt8w2rzVjBOf8gHZRXFczzUn8dqngDaICljl/Xq/eeIshyaoPn/QQ7qjCZfPXyiv0SxtOaDj6zq2A39XRfF0AAxIOxhZZoiunekjZfpDoGlvrWugaUm9foKRQyYG6bPOF+6bIcAecq4bRz3zx+wGMW3/jMdZVys+NP95wJV3KJ4TvpFXfkbQjzNf+s6KuP/z9OglukRhyKtFdMit/Ixuu2TxpBWhH9dZFXgLHCKbfR6/yUKr9eITIz3qkiXSyDlvF6JRLiHtsfoJAnRblhej6t463GObWWTE+49wFJ6qIbjWsiqZzpEWp9oAZYDQxIrLsSfq4EzXMNyw++GLllqp9nEaZGGugQLoCynu/0LqzGiqctmuBpIFvIdTE6o9qZyaEaDLvoZd832PIHrbM2i6tY/3onCDavD+yxi05ktO5nbx1rNNytGcxZ9F4mZM/sjiU83dhApjBpGkdQgJ2VmFCFvgDikO2vlyeMUNV/yYiXuQqieGgQS5ZGy2fHVckmjd8g7bkvCCL0Z/ngKAhP17QRoaDTK1pk0bD7dNIiOkcx4qUAoC1A2WWUrPgZ4xNjnq9I30I4pxTjjkM2UphUPk82XJa1yS0yOC1TO69l5fPyMOtYs=
 android:
   components:
   - tools
   - platform-tools
   - tools
   - android-28
-
 licenses:
 - android-sdk-preview-license-52d11cd2
 - android-sdk-license-.+
 - google-gdk-license-.+
-
-
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
-
 notifications:
   email: false
-
 before_script:
 - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
 - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
-
 script: "./gradlew assembleRelease"
-
 deploy:
   provider: script
-  script: "echo $BINTRAY_USER && ./gradlew core:clean && ./gradlew core:build && ./gradlew core:install && ./gradlew core:bintrayUpload"
+  script: echo $BINTRAY_USER && ./gradlew core:clean && ./gradlew core:build && ./gradlew core:install && ./gradlew core:bintrayUpload
   skip_cleanup: true
   dry_run: true
   on:
