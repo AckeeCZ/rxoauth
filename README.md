@@ -111,3 +111,5 @@ When creating your API service, just provide `RxOAuthCallAdapterFactory` to Retr
 ### 2.1.0
 - Rename `wrapWithOAuthHandlingObservable()`, `wrapWithOAuthHandlingSingle()` and `wrapWithOAuthHandlingCompletable()` functions, returning transformers to `transformObservable()`, `transformSingle()` and `transformCompletable()` respectively
 - Add Kotlin extensions for RxJava entities: `wrapWithOAuthHandlingObservable()`, `wrapWithOAuthHandlingSingle()` and `wrapWithOAuthHandlingCompletable()`
+### 2.1.1
+- Fix `NullPointerException` on `Completable` handling due to null body
