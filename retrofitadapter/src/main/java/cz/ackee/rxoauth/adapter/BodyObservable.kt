@@ -24,13 +24,13 @@ import io.reactivex.plugins.RxJavaPlugins
 import retrofit2.HttpException
 import retrofit2.Response
 
-internal class BodyObservable<T>(private val upstream: Observable<Response<T>>) : Observable<T>() {
+internal class BodyObservable<T>(private val upstream: Observable<Response<T>>, private val isCompletable: Boolean = false) : Observable<T>() {
 
     override fun subscribeActual(observer: Observer<in T>) {
-        upstream.subscribe(BodyObserver(observer))
+        upstream.subscribe(BodyObserver(observer, isCompletable))
     }
 
-    private class BodyObserver<R> internal constructor(private val observer: Observer<in R>) : Observer<Response<R>> {
+    private class BodyObserver<R> internal constructor(private val observer: Observer<in R>, private val isCompletable: Boolean) : Observer<Response<R>> {
         private var terminated: Boolean = false
 
         override fun onSubscribe(disposable: Disposable) {
@@ -39,7 +39,11 @@ internal class BodyObservable<T>(private val upstream: Observable<Response<T>>) 
 
         override fun onNext(response: Response<R>) {
             if (response.isSuccessful) {
-                observer.onNext(response.body()!!)
+                if (isCompletable) {
+                    observer.onComplete()
+                } else {
+                    observer.onNext(response.body()!!)
+                }
             } else {
                 terminated = true
                 val t = HttpException(response)

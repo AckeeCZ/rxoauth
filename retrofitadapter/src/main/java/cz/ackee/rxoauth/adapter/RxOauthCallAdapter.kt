@@ -42,7 +42,7 @@ internal class RxOauthCallAdapter<R>(private val responseType: Type,
 
         var observable: Observable<*>
         observable = if (isBody) {
-            BodyObservable(responseObservable)
+            BodyObservable(responseObservable, isCompletable)
         } else {
             responseObservable
         }
