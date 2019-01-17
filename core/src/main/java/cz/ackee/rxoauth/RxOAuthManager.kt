@@ -45,10 +45,7 @@ class RxOAuthManager internal constructor(private val oAuthStore: OAuthStore,
                 .doOnComplete { initRefreshTokenObservable() }
     }
 
-    /**
-     * Wrap upstream observable with oauth refresh access token handling
-     */
-    fun <T> wrapWithOAuthHandlingObservable(): ObservableTransformer<T, T> {
+    fun <T> transformObservable(): ObservableTransformer<T, T> {
         return ObservableTransformer { upstream ->
             if (oAuthStore.tokenExpired()) {
                 refreshTokenObservable!!.flatMap { upstream }
@@ -62,10 +59,7 @@ class RxOAuthManager internal constructor(private val oAuthStore: OAuthStore,
         }
     }
 
-    /**
-     * Wrap upstream Single with oauth refresh access token handling
-     */
-    fun <T> wrapWithOAuthHandlingSingle(): SingleTransformer<T, T> {
+    fun <T> transformSingle(): SingleTransformer<T, T> {
         return SingleTransformer { upstream ->
             if (oAuthStore.tokenExpired()) {
                 refreshTokenObservable!!.flatMapSingle { upstream }.firstOrError()
@@ -79,10 +73,7 @@ class RxOAuthManager internal constructor(private val oAuthStore: OAuthStore,
         }
     }
 
-    /**
-     * Wrap upstream Completable with oauth refresh access token handling
-     */
-    fun wrapWithOAuthHandlingCompletable(): CompletableTransformer {
+    fun transformCompletable(): CompletableTransformer {
         return CompletableTransformer { upstream ->
             if (oAuthStore.tokenExpired()) {
                 refreshTokenObservable!!.flatMapCompletable { upstream }
@@ -118,3 +109,18 @@ class RxOAuthManager internal constructor(private val oAuthStore: OAuthStore,
                 }
     }
 }
+
+/**
+ * Wrap upstream observable with oauth refresh access token handling
+ */
+fun <T> Observable<T>.wrapWithOAuthHandlingObservable(rxOAuthManager: RxOAuthManager): Observable<T> = compose(rxOAuthManager.transformObservable())
+
+/**
+ * Wrap upstream Single with oauth refresh access token handling
+ */
+fun <T> Single<T>.wrapWithOAuthHandlingSingle(rxOAuthManager: RxOAuthManager): Single<T> = compose(rxOAuthManager.transformSingle())
+
+/**
+ * Wrap upstream Completable with oauth refresh access token handling
+ */
+fun Completable.wrapWithOAuthHandlingCompletable(rxOAuthManager: RxOAuthManager): Completable = compose(rxOAuthManager.transformCompletable())
