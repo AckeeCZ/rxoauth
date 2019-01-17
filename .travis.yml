@@ -35,5 +35,3 @@ deploy:
     core:install && ./gradlew core:bintrayUpload
   skip_cleanup: true
   dry_run: true
-  on:
-    tags: true
