@@ -31,9 +31,7 @@ before_script:
 script: "./gradlew assembleRelease"
 deploy:
   provider: script
-  script: echo $BINTRAY_USER && ./gradlew core:clean && ./gradlew core:build && ./gradlew
-    core:install && ./gradlew core:bintrayUpload
+  script: ./gradlew clean && ./gradlew build && ./gradlew install && ./gradlew bintrayUpload
   skip_cleanup: true
-  dry_run: true
   on:
     all_branches: true
