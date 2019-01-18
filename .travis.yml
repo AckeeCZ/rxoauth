@@ -28,12 +28,12 @@ notifications:
 #include:
 #- stage test
 #name: "Running tests"
-#  before_script:
-#    - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
-#    - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
-#    - emulator -avd test -no-skin -no-audio -no-window &
-#    - android-wait-for-emulator
-#    - adb shell input keyevent 82 &
+  before_script:
+    - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
+    - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
+    - emulator -avd test -no-skin -no-audio -no-window &
+    - android-wait-for-emulator
+    - adb shell input keyevent 82 &
   script:
     - ./gradlew test
 
