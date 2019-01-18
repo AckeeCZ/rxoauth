@@ -1,8 +1,37 @@
-jobs:
-  include:
-    - stage: test
-      script: echo "Ahoj"
-    - # stage name not required, will continue to use `test`
-      script: script: echo "Ahoj 2"
-    - stage: deploy
-      script: echo "Ahoj 3"
+language: android
+jdk:
+- oraclejdk8
+env:
+  global:
+  - secure: "kyD6XwggccwJdwPRY6q96sYI+eNph81OUQBtnptPOkgyZKm6JGsjLrMp8pjxN8e1w215IYJgrAU6YWW1aiQJbL6Axk1iwO7m2YYNUPKUeSieJhBUZbg5p772aL0yQx4AMBv8yb1Sp/WyRDQf4iAoxoDHs1Rc3c5gRE/Yak/R5oVoMqRjqGYv5WnZ7Q7YH2jF035/jAVoc14epF/OIHL3YUhgmtOpAdCUt/7QqpO/MPr6tb7F8ziAk7/IqbrUT0b8SoG441vWi11WHytMPi3f1SWW2X2oSuUfDIK6XW+QFGc97hpcK6qRruWsaaGcwafppXkq4CjZvyYIpv4kRRSJSQwp1tClCW2D+FTX4EaE8bAedMGQEsv/tnU8PFE04kqJBDXKlwU/RTPNOuct4GFwyvqCAM7AH8wF7dUXrxSAIuYI9S6I/MYtLwz40dcgtHn2E3XUqEsRwTUayPLHotrRqiL8hl/EzZBiMNSSrBnhZflxLyBnT9NtSVubkUNx/QmpZ3VzCJYuGqKUZoRU7HAr7DfmNjO1T8IG0fdu7Psy3GMEwqwROJ/0vZbq64hQPbUAY1t4zms1QLUcEoyALAJC3oof7oiMviSGKfnXbJuOQkMWzFoRx6OZnblYzGZi3BMJjeX3JM4SUmEtHRgiCa7FEqPtec9CI1MewU+KxJUUJbs="
+  - secure: "bmkX5Igj3u24nsH1txlUG8jmbMet71CeoeDM760b1onjYqhbq8NQeruBgTibRsCaKsfupNMjldAsrhrzFAUn2SJqEOyG/SRaLvYIoTH+VIAv4F+dUAUuTzxdh0Kj4qFTXuj2CfvMqV9ee6j5Nm8WNcR7wlogBfjjgCOI9OMubPfSfe3UiwOytoRKK8GJMNrxBDXZGidKqAUkBpY6w8x31Szw4fZ/VymmaSfp8PuOK18SJCFDpY+MfREPLBZpUk3Tv8xhedotX9R9X82FumYQQRs2R6E7WFJ/rK5Cmp1b3JshD4SVE5GbwBys7hqmlqH/OckuQVZWmCtLudR860d1KfK/W9HV7t78RVlnR0My03IZ7bSLXT8Rn1yagBzqSfl7rjThPEQMLHqbdnmix4s6r4wHEKol1J5ALFh2pnjKuqgrzllafeSuLQp2Ysby02y2AbxVaNiGhrbieP15W0N9m3L9Qy3HSfrvcPTyFUA/THDgyL3tyS16mPotiUtmUcL0DINFqV2KjNwU71eHwFKKl/62zPqKppCA2sVcKr+MImQbdtqeXkxB3TlJyANG+A6CGZcN0LhMtUP10UJHc/i0IrPG1KfBvrqiEwQPR3GbtkMhuCNdAI/L7BTKgM0iwT1yBGDi5VfiZYxzpePHxHb9CgjNlv67CgaNrMExwQwWlmQ="
+android:
+  components:
+  - tools
+  - platform-tools
+  - tools
+  - android-28
+licenses:
+- android-sdk-preview-license-52d11cd2
+- android-sdk-license-.+
+- google-gdk-license-.+
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+notifications:
+  email: false
+before_script:
+- echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
+- echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
+script: "./gradlew build check"
+deploy:
+  provider: script
+  script: ./gradlew clean && ./gradlew build && ./gradlew install && ./gradlew bintrayUpload
+  skip_cleanup: true
+  on:
+    tags: true
