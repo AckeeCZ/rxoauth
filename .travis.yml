@@ -8,9 +8,10 @@ env:
 android:
   components:
   - tools
-  - platform-tools
   - tools
+  - platform-tools
   - android-28
+  - sys-img-x86-android-28
 licenses:
   - android-sdk-preview-license-52d11cd2
   - android-sdk-license-.+
@@ -32,6 +33,8 @@ notifications:
 before_script:
   - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
   - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
+  - android list targets
+  - echo no | android create avd --force -n test -t android-28 --abi x86 -no-accel
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
