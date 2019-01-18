@@ -26,25 +26,19 @@ cache:
   - "$HOME/.android/build-cache"
 notifications:
   email: false
-#jobs:
-#include:
-#- stage test
-#name: "Running tests"
-before_script:
-  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
-  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
-  - android list targets
-  - echo no | android create avd --force -n test -t android-23 --abi google_apis/armeabi-v7a
-  - emulator -avd test -no-audio -no-window
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
-script:
-  - ./gradlew build connectedCheck
-
-
-#  script: "./gradlew assembleRelease"
-#  deploy:
+jobs:
+  include:
+    - stage test
+    name: "Unit tests"
+    script: ./gradlew build check
+#    - stage deploy
+#    name: "Deploy to Bintray"
+#    script: skip
+#    deploy:
 #      provider: script
+#      before_script:
+#        - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
+#        - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
 #      script: ./gradlew clean && ./gradlew build && ./gradlew install && ./gradlew bintrayUpload
 #      skip_cleanup: true
 #      on:

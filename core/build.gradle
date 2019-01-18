@@ -27,6 +27,8 @@ dependencies {
 
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
 
+    testImplementation "junit:junit:$junitVersion"
+
     androidTestImplementation "junit:junit:$junitVersion"
     androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation "com.google.dexmaker:dexmaker:$dexmakerVersion"
